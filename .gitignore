@@ -1,29 +1,38 @@
+# Mac specific
+*.DS_Store
+
+# Pycharm
+*.idea
+
 # Byte-compiled / optimized / DLL files
-__pycache__/
+gesture-analysis/__pycache__/
 *.py[cod]
 *$py.class
 
 # C extensions
 *.so
 
+# gesture analysis specific
+gesture-analysis/data/
+
 # Distribution / packaging
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
+gesture-analysis/build/
+gesture-analysis/develop-eggs/
+gesture-analysis/dist/
+gesture-analysis/downloads/
+gesture-analysis/eggs/
+gesture-analysis/.eggs/
+gesture-analysis/lib/
+gesture-analysis/lib64/
+gesture-analysis/parts/
+gesture-analysis/sdist/
+gesture-analysis/var/
+gesture-analysis/wheels/
 *.egg-info/
-.installed.cfg
+gesture-analysis/.installed.cfg
 *.egg
-MANIFEST
+gesture-analysis/MANIFEST
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -32,20 +41,20 @@ MANIFEST
 *.spec
 
 # Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+gesture-analysis/pip-log.txt
+gesture-analysis/pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
+gesture-analysis/htmlcov/
+gesture-analysis/.tox/
+gesture-analysis/.coverage
+gesture-analysis/.coverage.*
+gesture-analysis/.cache
+gesture-analysis/nosetests.xml
+gesture-analysis/coverage.xml
 *.cover
-.hypothesis/
-.pytest_cache/
+gesture-analysis/.hypothesis/
+gesture-analysis/.pytest_cache/
 
 # Translations
 *.mo
@@ -53,52 +62,52 @@ coverage.xml
 
 # Django stuff:
 *.log
-local_settings.py
-db.sqlite3
+gesture-analysis/local_settings.py
+gesture-analysis/db.sqlite3
 
 # Flask stuff:
-instance/
-.webassets-cache
+gesture-analysis/instance/
+gesture-analysis/.webassets-cache
 
 # Scrapy stuff:
-.scrapy
+gesture-analysis/.scrapy
 
 # Sphinx documentation
-docs/_build/
+gesture-analysis/docs/_build/
 
 # PyBuilder
-target/
+gesture-analysis/target/
 
 # Jupyter Notebook
-.ipynb_checkpoints
+gesture-analysis/.ipynb_checkpoints
 
 # pyenv
-.python-version
+gesture-analysis/.python-version
 
 # celery beat schedule file
-celerybeat-schedule
+gesture-analysis/celerybeat-schedule
 
 # SageMath parsed files
 *.sage.py
 
 # Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+gesture-analysis/.env
+gesture-analysis/.venv
+gesture-analysis/env/
+gesture-analysis/venv/
+gesture-analysis/ENV/
+gesture-analysis/env.bak/
+gesture-analysis/venv.bak/
 
 # Spyder project settings
-.spyderproject
-.spyproject
+gesture-analysis/.spyderproject
+gesture-analysis/.spyproject
 
 # Rope project settings
-.ropeproject
+gesture-analysis/.ropeproject
 
 # mkdocs documentation
 /site
 
 # mypy
-.mypy_cache/
+gesture-analysis/.mypy_cache/

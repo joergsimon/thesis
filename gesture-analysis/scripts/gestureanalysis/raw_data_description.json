@@ -1,0 +1,84 @@
+{
+  "indices": {
+    "flex" : {
+      "all" : [0,2,3,4,5,6,7,8,9,10,11,16,17],
+      "row_1" : [0,3,5,7,9],
+      "row_2" : [11,4,6,8,10]
+    },
+    "pressure" : [1,12,13,14,15],
+    "accel" : [
+      18,19,20,
+      24,25,26,
+      30,31,32,
+      36,37,38,
+      42,43,44,
+      48,49,50,
+      54,55,56
+    ],
+    "gyro" : [
+      21,22,23,
+      27,28,29,
+      33,34,35,
+      39,40,41,
+      45,46,47,
+      51,52,53,
+      57,58,59
+    ],
+    "magnetometer" : [60,61,62],
+    "lin_accel" : [],
+    "thumb" : {
+      "all" : [0,1,2,11,42,43,44,45,46,47]
+    },
+    "finger_1" : {
+      "all" : [3,4,12,18,19,20,21,22,23]
+    },
+    "finger_2" : {
+      "all" : [5,6,13,24,25,26,27,28,29]
+    },
+    "finger_3" : {
+      "all" : [7,8,14,30,31,32,33,34,35]
+    },
+    "finger_4" : {
+      "all" : [9,10,15,36,37,38,39,40,41]
+    },
+    "wrist" : {
+      "all" : [16,17,54,55,56,57,58,59,60,61,62],
+      "flex" : [16,17],
+      "imu": [54,55,56,57,58,59]
+    },
+    "palm" : {
+      "all" : [48,49,50,51,52,53]
+    }
+  },
+  "headers_array" : [
+    "0_Thumb_base",
+    "1_Thumb_pressure",
+    "2_Angle_between_thumb_and_hand",
+    "3_Finger_1_base","4_Finger_1_tip",
+    "5_Finger_2_base","6_Finger_2_tip",
+    "7_Finger_3_base","8_Finger_3_tip",
+    "9_Finger_4_base","10_Finger_4_tip",
+    "11_Thumb_tip",
+    "12_Finger_1_pressure","13_Finger_2_pressure","14_Finger_3_pressure","15_Finger_4_pressure",
+    "16_Wrist_extension","17_Wrist_flexion",
+    "18_Finger_1_Accel_X", "19_Finger_1_Accel_Y", "20_Finger_1_Accel_Z",
+    "21_Finger_1_Gyro_X",  "22_Finger_1_Gyro_Y",  "23_Finger_1_Gyro_Z",
+    "24_Finger_2_Accel_X", "25_Finger_2_Accel_Y", "26_Finger_2_Accel_Z",
+    "27_Finger_2_Gyro_X",  "28_Finger_2_Gyro_Y",  "29_Finger_2_Gyro_Z",
+    "30_Finger_3_Accel_X", "31_Finger_3_Accel_Y", "32_Finger_3_Accel_Z",
+    "33_Finger_3_Gyro_X",  "34_Finger_3_Gyro_Y",  "35_Finger_3_Gyro_Z",
+    "36_Finger_4_Accel_X", "37_Finger_4_Accel_Y", "38_Finger_4_Accel_Z",
+    "39_Finger_4_Gyro_X",  "40_Finger_4_Gyro_Y",  "41_Finger_4_Gyro_Z",
+    "42_Thumb_Accel_X", "43_Thumb_Accel_Y", "44_Thumb_Accel_Z",
+    "45_Thumb_Gyro_X",  "46_Thumb_Gyro_Y",  "47_Thumb_Gyro_Z",
+    "48_Palm_Accel_X",  "49_Palm_Accel_Y",  "50_Palm_Accel_Z",
+    "51_Palm_Gyro_X",   "52_Palm_Gyro_Y",   "53_Palm_Gyro_Z",
+    "54_Wrist_Accel_X", "55_Wrist_Accel_Y", "56_Wrist_Accel_Z",
+    "57_Wrist_Gyro_X",  "58_Wrist_Gyro_Y",  "59_Wrist_Gyro_Z",
+    "60_Magnetometer_X", "61_Magnetometer_Y", "62_Magnetometer_Z",
+    "63_Magnetometer_X_ignore_double", "64_Magnetometer_Y_ignore_double", "65_Magnetometer_Z_ignore_double"
+  ],
+  "labels_header_array" : [
+    "manual_L_vs_automatic_G", "gesture", "aut0_dyn1_static2", "start_glove", "end_glove", "start_myo", "end_myo"
+  ]
+}
