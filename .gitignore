@@ -80,6 +80,7 @@ gesture-analysis/target/
 
 # Jupyter Notebook
 gesture-analysis/.ipynb_checkpoints
+gesture-analysis/scripts/.ipynb_checkpoints/
 
 # pyenv
 gesture-analysis/.python-version
