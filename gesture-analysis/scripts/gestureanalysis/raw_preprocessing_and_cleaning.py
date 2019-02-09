@@ -69,7 +69,8 @@ def preprocess_raw(users, add_label_func, transform_index_to_time_func):
             fname = gd['file']
             lfname = ld['file']
             if not is_corresponding(fname, lfname):  # should always be true
-                print(fname, '\n', lfname, '\n', "!!!! WTF, WTF, WTF !!!")
+                print('ignore user ', fname[0:4])
+                #print(fname, '\n', lfname, '\n', "!!!! WTF, WTF, WTF !!!")
                 continue
 
             gdata = gd['data']
@@ -117,6 +118,6 @@ def collect_stats(duration, calc_duration, pins):
         pins[2][2] += calc_duration
     else:
         pins[3][0] += duration
-        pins[3][1] += duration
+        pins[3][1] += 1
         pins[3][2] += calc_duration
 
