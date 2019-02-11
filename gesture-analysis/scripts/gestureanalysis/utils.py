@@ -59,3 +59,15 @@ def std_of_frames(list_of_dfs, average = None):
     return std
 
 
+def cmp_t(t1, t2):
+    if t1 == t2:
+        return True
+    else:
+        return False
+
+
+def tuple_in_list(tpl, lst):
+    for t in lst:
+        if cmp_t(tpl, t):
+            return True
+    return False
