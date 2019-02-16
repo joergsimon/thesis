@@ -41,6 +41,10 @@ def find_consecutive_groups(lst, delta, use_tqdm=False):
                 end = r1
                 groups.append((start, end))
                 start = None
+    if start is not None:
+        if end is None:
+            end = r1
+            groups.append((start, end))
     return groups
 
 
@@ -71,3 +75,12 @@ def tuple_in_list(tpl, lst):
         if cmp_t(tpl, t):
             return True
     return False
+
+
+def rest(l1, l2):
+    if len(l1) == len(l2):
+        return None
+    candidate = l1 if len(l1) > len(l2) else l2
+    start = min(len(l1), len(l2))
+    return candidate[start:]
+
