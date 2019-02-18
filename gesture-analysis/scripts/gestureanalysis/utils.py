@@ -33,7 +33,7 @@ def find_consecutive_groups(lst, delta, use_tqdm=False):
     for idx in r:
         r1 = lst[idx]
         r2 = lst[idx + 1]
-        if (r2 - r1) < delta:  # dt*2 to allow a dropt frame from time to time....?
+        if (r2 - r1) <= delta:  # dt*2 to allow a dropt frame from time to time....?
             if start is None:
                 end = None
                 start = r1
