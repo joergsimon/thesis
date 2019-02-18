@@ -3,6 +3,7 @@ import numpy as np
 from functools import reduce
 import pickle
 
+
 def try_pickl_or_recreate(path, recreate_func):
     try:
         with open(path, "rb") as pickle_file:
@@ -83,4 +84,5 @@ def rest(l1, l2):
     candidate = l1 if len(l1) > len(l2) else l2
     start = min(len(l1), len(l2))
     return candidate[start:]
+
 

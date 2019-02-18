@@ -15,10 +15,12 @@ def is_corresponding(glove_file, label_file):
 
 
 def add_label(glovedata, labelrow, column):
+    columnidx = glovedata.columns.get_loc(column)
     gesture = labelrow['gesture']
     start = labelrow['start_glove']
     end = labelrow['end_glove']
-    glovedata.loc[(glovedata.index >= start) & (glovedata.index <= end), column] = gesture
+    glovedata.iloc[start:(end+1), columnidx] = gesture
+    #glovedata.loc[(glovedata.index >= start) & (glovedata.index <= end), column] = gesture
 
 
 def add_labels(gdata, ldata):

@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 from datetime import timedelta
 
+
 class Constants:
 
     def __init__(self):
