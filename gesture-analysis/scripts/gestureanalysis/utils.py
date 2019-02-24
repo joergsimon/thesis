@@ -89,8 +89,8 @@ def rest(l1, l2):
 def is_inside(startend1, startend2):
     s1,e1 = startend1
     s2,e2 = startend2
-    if (s1 > s2) and (s1 < e2):
-        if (e1 < e2) and (e1 > s2):
+    if (s1 >= s2) and (s1 <= e2):
+        if (e1 <= e2) and (e1 >= s2):
             return True
     return False
 
@@ -98,9 +98,9 @@ def is_inside(startend1, startend2):
 def overlaps(startend1, startend2):
     s1,e1 = startend1
     s2,e2 = startend2
-    if (s1 > s2) and (s1 < e2):
+    if (s1 >= s2) and (s1 <= e2):
         return True
-    elif (e1 < e2) and (e1 > s2):
+    elif (e1 <= e2) and (e1 >= s2):
         return True
     else:
         return False
