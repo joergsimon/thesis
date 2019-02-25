@@ -1,6 +1,36 @@
 import pandas as pd
 import numpy as np
+from dataclasses import dataclass
+from .utils import *
 from .constants import Constants
+
+
+def t_to_t(tpl):
+    if tpl is None:
+        return None
+    start,end = tpl
+    return Timerange(start, end)
+
+
+def tim_to_tu(r):
+    if r is None:
+        return None
+    return (r.start, r.end)
+
+
+@dataclass
+class Timerange(object):
+    start: pd.Timestamp
+    end: pd.Timestamp
+
+
+@dataclass
+class LabelGroup(object):
+    label_name: str
+    automatic: Timerange
+    manual: Timerange
+    static: Timerange
+    dynamic: Timerange
 
 
 def datestr_from_filename(fname):
@@ -25,3 +55,21 @@ def split_df_by_groups(df, groups, delta=None):
         all_instances.append(instance.copy())
     return all_instances
 
+
+def combine_ranges_contained(reference, start_search, list_of_possible_subs):
+    s, e = None, None
+    new_range = []
+    for idx in range(start_search, len(list_of_possible_subs)):
+        g = list_of_possible_subs[idx]
+        if is_inside(g, reference):
+            if s is None:
+                s, e = g
+            else:
+                e = g[1]
+        else:
+            if s is not None:
+                new_range.append((s, e))
+                s, e = None, None
+                start = idx
+                break
+    return max(0, start-1), new_range
