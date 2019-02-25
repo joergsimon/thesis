@@ -1,6 +1,7 @@
 from __future__ import annotations
 import pandas as pd
 import numpy as np
+from datetime import timedelta
 from dataclasses import dataclass
 from .utils import *
 from .constants import Constants
@@ -24,7 +25,7 @@ class Timerange(object):
     start: pd.Timestamp
     end: pd.Timestamp
 
-    def approx(self, other: Timerange, tolerance):
+    def approx(self, other: Timerange, tolerance: timedelta):
         start_ok = abs(other.start - self.start) < tolerance
         end_ok = abs(other.end - self.end) < tolerance
         return start_ok and end_ok
@@ -37,17 +38,17 @@ class LabelGroup(object):
     static: Timerange
     dynamic: Timerange
 
-    def approx(self, other: LabelGroup, tolerance):
+    def approx(self, other: LabelGroup, tolerance: timedelta):
         label_ok = other.label_name == self.label_name
-        aut_ok = self.automatic.approx(other.automatic)
-        man_ok = self.manual.approx(other.manual)
-        dyn_ok = self.dynamic.approx(other.dynamic)
+        aut_ok = self.automatic.approx(other.automatic, tolerance)
+        man_ok = self.manual.approx(other.manual, tolerance)
+        dyn_ok = self.dynamic.approx(other.dynamic, tolerance)
         if self.static is None:
             sta_ok = False
             if other.static is None:
                 sta_ok = True
         else:
-            sta_ok = self.static.approx(other.manual)
+            sta_ok = self.static.approx(other.manual, tolerance)
         return label_ok and aut_ok and man_ok and dyn_ok and sta_ok
 
 
