@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from __future__ import annotations
 from dataclasses import dataclass
 from .utils import *
 from .constants import Constants
@@ -23,6 +24,10 @@ class Timerange(object):
     start: pd.Timestamp
     end: pd.Timestamp
 
+    def approx(self, other: Timerange, tolerance):
+        start_ok = abs(other.start - self.start) < tolerance
+        end_ok = abs(other.end - self.end) < tolerance
+        return start_ok and end_ok
 
 @dataclass
 class LabelGroup(object):
@@ -31,6 +36,19 @@ class LabelGroup(object):
     manual: Timerange
     static: Timerange
     dynamic: Timerange
+
+    def approx(self, other: LabelGroup, tolerance):
+        label_ok = other.label_name == self.label_name
+        aut_ok = self.automatic.approx(other.automatic)
+        man_ok = self.manual.approx(other.manual)
+        dyn_ok = self.dynamic.approx(other.dynamic)
+        if self.static is None:
+            sta_ok = False
+            if other.static is None:
+                sta_ok = True
+        else:
+            sta_ok = self.static.approx(other.manual)
+        return label_ok and aut_ok and man_ok and dyn_ok and sta_ok
 
 
 def datestr_from_filename(fname):
