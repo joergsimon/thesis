@@ -51,15 +51,15 @@ class LabelGroup(object):
             sta_ok = self.static.approx(other.manual, tolerance)
         return label_ok and aut_ok and man_ok and dyn_ok and sta_ok
 
-    def diff(self, other:LabelGroup, tolerance: timedelta):
+    def diff(self, other: LabelGroup, tolerance: timedelta):
         res = []
         if self.label_name != other.label_name:
             res.append(("name", self.label_name, other.label_name))
-        if not self.automatic.approx(other.automatic):
+        if not self.automatic.approx(other.automatic, tolerance):
             res.append(("aut", self.automatic, other.automatic))
-        if not self.manual.approx(other.manual):
+        if not self.manual.approx(other.manual, tolerance):
             res.append(("man", self.manual, other.manual))
-        if not self.dynamic.approx(other.dynamic):
+        if not self.dynamic.approx(other.dynamic, tolerance):
             res.append(("dyn", self.dynamic, other.dynamic))
 
         if self.static is None:
