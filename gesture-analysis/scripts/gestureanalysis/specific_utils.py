@@ -73,3 +73,34 @@ def combine_ranges_contained(reference, start_search, list_of_possible_subs):
                 start_search = idx
                 break
     return max(0, start_search-1), new_range
+
+
+# ====== Specific to work with the label_data files =======
+
+
+def recover_group(startdate, labelrow):
+    start = labelrow['start_glove']
+    end = labelrow['end_glove']
+    s = pd.Timestamp(startdate + (start * Constants.dt_t))
+    e = pd.Timestamp(startdate + (end * Constants.dt_t))
+    return (s, e)
+
+
+def get_automatic_labels(label_data):
+    automatic = label_data[label_data['manual_L_vs_automatic_G'] == 'G']
+    return automatic
+
+
+def get_manual_labels(label_data):
+    manual = label_data[label_data['manual_L_vs_automatic_G'] == 'L']
+    return manual
+
+
+def get_dynamic_labels(label_data):
+    dynamic = label_data[label_data['aut0_dyn1_static2'] == 1]
+    return dynamic
+
+
+def get_static_labels(label_data):
+    static = label_data[label_data['aut0_dyn1_static2'] == 2]
+    return static
