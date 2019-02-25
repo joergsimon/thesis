@@ -51,6 +51,26 @@ class LabelGroup(object):
             sta_ok = self.static.approx(other.manual, tolerance)
         return label_ok and aut_ok and man_ok and dyn_ok and sta_ok
 
+    def diff(self, other:LabelGroup, tolerance: timedelta):
+        res = []
+        if self.label_name != other.label_name:
+            res.append(("name", self.label_name, other.label_name))
+        if not self.automatic.approx(other.automatic):
+            res.append(("aut", self.automatic, other.automatic))
+        if not self.manual.approx(other.manual):
+            res.append(("man", self.manual, other.manual))
+        if not self.dynamic.approx(other.dynamic):
+            res.append(("dyn", self.dynamic, other.dynamic))
+
+        if self.static is None:
+            if other.static is not None:
+                res.append(("sta", None, other.static))
+        elif other.static is None:
+            res.append(("sta", self.static, None))
+        elif not self.static.approx(other.static, tolerance):
+            res.append(("sta", self.static, other.static))
+        return res
+
 
 def datestr_from_filename(fname):
     fdate = fname[-23:-4]
