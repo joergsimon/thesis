@@ -70,6 +70,6 @@ def combine_ranges_contained(reference, start_search, list_of_possible_subs):
             if s is not None:
                 new_range.append((s, e))
                 s, e = None, None
-                start = idx
+                start_search = idx
                 break
-    return max(0, start-1), new_range
+    return max(0, start_search-1), new_range
