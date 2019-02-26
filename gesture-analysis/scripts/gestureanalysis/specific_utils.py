@@ -37,13 +37,13 @@ class Timerange(object):
         start_ok = abs(other.start - self.start) < tolerance
         end_ok = abs(other.end - self.end) < tolerance
         if start_ok and end_ok:
-            return ('total diff', self, other)
+            return None
         elif start_ok:
             return ('end diff', self.end, other.end)
         elif end_ok:
             return ('start diff', self.start, other.start)
         else:
-            return None
+            return ('total diff', self, other)
 
 
 
