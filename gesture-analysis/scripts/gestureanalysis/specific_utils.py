@@ -33,6 +33,20 @@ class Timerange(object):
     def delta(self):
         return self.end - self.start
 
+    def diff(self, other: Timerange, tolerance: timedelta):
+        start_ok = abs(other.start - self.start) < tolerance
+        end_ok = abs(other.end - self.end) < tolerance
+        if start_ok and end_ok:
+            return ('total diff', self, other)
+        elif start_ok:
+            return ('end diff', self.end, other.end)
+        elif end_ok:
+            return ('start diff', self.start, other.start)
+        else:
+            return None
+
+
+
 @dataclass
 class LabelGroup(object):
     label_name: str
@@ -71,11 +85,11 @@ class LabelGroup(object):
         if self.label_name != other.label_name:
             res.append(("name", self.label_name, other.label_name))
         if not self.automatic.approx(other.automatic, tolerance):
-            res.append(("aut", self.automatic.delta(), other.automatic.delta()))
+            res.append(("aut", self.automatic.diff(other.automatic)))
         if not self.manual.approx(other.manual, tolerance):
-            res.append(("man", self.manual.delta(), other.manual.delta()))
+            res.append(("man", self.manual.diff(other.manual)))
         if not self.dynamic.approx(other.dynamic, tolerance):
-            res.append(("dyn", self.dynamic.delta(), other.dynamic.delta()))
+            res.append(("dyn", self.dynamic.diff(other.dynamic)))
         self.diff_static(other, tolerance, res)
         return res
 
@@ -93,7 +107,7 @@ class LabelGroup(object):
             else:
                 res.append(("sta", self.static.delta(), 0))
         elif not self.static.approx(other.static, tolerance):
-            res.append(("sta", self.static.delta(), other.static.delta()))
+            res.append(("sta", self.static.diff(other.static)))
 
 
 def datestr_from_filename(fname):
