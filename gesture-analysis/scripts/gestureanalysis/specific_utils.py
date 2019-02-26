@@ -134,6 +134,12 @@ class LabelGroup(object):
         if self.manual.end > self.automatic.end:
             info.append('manual takes longer than automatic!')
             no_error = False
+        if self.automatic.delta() > timedelta(seconds=3.1):
+            info.append('automatic label too long')
+            no_error = False
+        if self.automatic.delta() < timedelta(seconds=2.9):
+            info.append('automatic label too short')
+            no_error = False
         return no_error
 
 
