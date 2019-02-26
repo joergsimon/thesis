@@ -30,6 +30,9 @@ class Timerange(object):
         end_ok = abs(other.end - self.end) < tolerance
         return start_ok and end_ok
 
+    def delta(self):
+        return self.end - self.start
+
 @dataclass
 class LabelGroup(object):
     label_name: str
@@ -43,13 +46,25 @@ class LabelGroup(object):
         aut_ok = self.automatic.approx(other.automatic, tolerance)
         man_ok = self.manual.approx(other.manual, tolerance)
         dyn_ok = self.dynamic.approx(other.dynamic, tolerance)
-        if self.static is None:
-            sta_ok = False
-            if other.static is None:
+        sta_ok = self.check_static(other, tolerance)
+        return label_ok and aut_ok and man_ok and dyn_ok and sta_ok
+
+    def check_static(self, other, tolerance: timedelta):
+        if (self.static is None) and (other.static is None):
+            sta_ok = True
+        elif self.static is None:
+            if other.static.delta() < tolerance:
                 sta_ok = True
+            else:
+                sta_ok = False
+        elif other.static is None:
+            if self.static.delta() < tolerance:
+                sta_ok = True
+            else:
+                sta_ok = False
         else:
             sta_ok = self.static.approx(other.manual, tolerance)
-        return label_ok and aut_ok and man_ok and dyn_ok and sta_ok
+        return sta_ok
 
     def diff(self, other: LabelGroup, tolerance: timedelta):
         res = []
@@ -61,15 +76,24 @@ class LabelGroup(object):
             res.append(("man", self.manual, other.manual))
         if not self.dynamic.approx(other.dynamic, tolerance):
             res.append(("dyn", self.dynamic, other.dynamic))
-
-        if self.static is None:
-            if other.static is not None:
-                res.append(("sta", None, other.static))
-        elif other.static is None:
-            res.append(("sta", self.static, None))
-        elif not self.static.approx(other.static, tolerance):
-            res.append(("sta", self.static, other.static))
+        self.diff_static(other, tolerance, res)
         return res
+
+    def diff_static(self, other, tolerance: timedelta, res):
+        if (self.static is None) and (other.static is None):
+            return
+        elif self.static is None:
+            if other.static.delta() < tolerance:
+                return
+            else:
+                res.append(("sta", 0, other.static))
+        elif other.static is None:
+            if self.static.delta() < tolerance:
+                return
+            else:
+                res.append(("sta", self.static, 0))
+        elif not self.static.approx(other.manual, tolerance):
+            res.append(("sta", self.static, other.static))
 
 
 def datestr_from_filename(fname):
