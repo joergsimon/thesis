@@ -71,11 +71,11 @@ class LabelGroup(object):
         if self.label_name != other.label_name:
             res.append(("name", self.label_name, other.label_name))
         if not self.automatic.approx(other.automatic, tolerance):
-            res.append(("aut", self.automatic, other.automatic))
+            res.append(("aut", self.automatic.delta(), other.automatic.delta()))
         if not self.manual.approx(other.manual, tolerance):
-            res.append(("man", self.manual, other.manual))
+            res.append(("man", self.manual.delta(), other.manual.delta()))
         if not self.dynamic.approx(other.dynamic, tolerance):
-            res.append(("dyn", self.dynamic, other.dynamic))
+            res.append(("dyn", self.dynamic.delta(), other.dynamic.delta()))
         self.diff_static(other, tolerance, res)
         return res
 
@@ -86,14 +86,14 @@ class LabelGroup(object):
             if other.static.delta() < tolerance:
                 return
             else:
-                res.append(("sta", 0, other.static))
+                res.append(("sta", 0, other.static.delta()))
         elif other.static is None:
             if self.static.delta() < tolerance:
                 return
             else:
-                res.append(("sta", self.static, 0))
+                res.append(("sta", self.static.delta(), 0))
         elif not self.static.approx(other.static, tolerance):
-            res.append(("sta", self.static, other.static))
+            res.append(("sta", self.static.delta(), other.static.delta()))
 
 
 def datestr_from_filename(fname):
