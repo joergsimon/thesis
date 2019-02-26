@@ -63,7 +63,7 @@ class LabelGroup(object):
             else:
                 sta_ok = False
         else:
-            sta_ok = self.static.approx(other.manual, tolerance)
+            sta_ok = self.static.approx(other.static, tolerance)
         return sta_ok
 
     def diff(self, other: LabelGroup, tolerance: timedelta):
@@ -92,7 +92,7 @@ class LabelGroup(object):
                 return
             else:
                 res.append(("sta", self.static, 0))
-        elif not self.static.approx(other.manual, tolerance):
+        elif not self.static.approx(other.static, tolerance):
             res.append(("sta", self.static, other.static))
 
 
