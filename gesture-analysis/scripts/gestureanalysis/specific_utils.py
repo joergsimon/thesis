@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import List
 import pandas as pd
 import numpy as np
 from datetime import timedelta
@@ -108,6 +109,32 @@ class LabelGroup(object):
                 res.append(("sta", self.static.delta(), 0))
         elif not self.static.approx(other.static, tolerance):
             res.append(("sta", self.static.diff(other.static, tolerance)))
+
+    def verify(self, info: List[str], dyn_static_gap_tolerance: timedelta) -> bool:
+        no_error = True
+        if self.manual.start < self.automatic.start:
+            info.append('manual before automatic')
+            no_error = False
+        if self.manual.start != self.dynamic.start:
+            info.append('manual and dynamic w. different start')
+            no_error = False
+        if self.static is not None:
+            if abs(self.static.start - self.dynamic.end) >= dyn_static_gap_tolerance:
+                info.append('dynamic and static gap too large')
+                if self.dynamic.end > self.static.end:
+                    info.append('dynamic much longer than static')
+                if self.static.start < self.dynamic.start:
+                    info.append('static much earlier than dynamic')
+                no_error = False
+            if self.static.end != self.manual.end:
+                info.append('static and manual w. different end')
+                no_error = False
+        elif self.manual.end > self.dynamic.end:
+            info.append('dynamic and manual w. different end / static = None')
+        if self.manual.end > self.automatic.end:
+            info.append('manual takes longer than automatic!')
+            no_error = False
+        return no_error
 
 
 def datestr_from_filename(fname):
