@@ -148,7 +148,9 @@ def get_timeranges(label_groups: List[LabelGroup], timerange_key: str):
 
 
 def get_timedeltas(label_groups: List[LabelGroup], timerange_key: str):
-    return list(map(lambda x: getattr(x, timerange_key).delta(), label_groups))
+    trs = get_timedeltas(label_groups, timerange_key)
+    trs = filter(None, trs)
+    return list(map(lambda x: x.delta(), trs))
 
 
 zero = timedelta(milliseconds=0)
@@ -161,27 +163,6 @@ highend = timedelta(milliseconds=5000)
 def four_pin_hist(label_groups: List[LabelGroup], timerange_key: str):
     deltas = get_timedeltas(label_groups, timerange_key)
     return np.histogram(deltas, [zero, low, mid, high, highend])
-    #res = np.zeros((4,2))
-    #for lg in label_groups:
-    #    timerange = lg[timerange_key]
-    #    duration = timerange.delta()
-    #    if duration < low:
-    #        res[0][0] += duration
-    #        res[0][1] += 1
-    #    elif duration < mid:
-    #        res[1][0] += duration
-    #        res[1][1] += 1
-    #    elif duration < high:
-    #        res[2][0] += duration
-    #        res[2][1] += 1
-    #    else:
-    #        res[3][0] += duration
-    #        res[3][1] += 1
-    #res[0][0] /= res[0][1]
-    #res[1][0] /= res[1][1]
-    #res[2][0] /= res[2][1]
-    #res[3][0] /= res[3][1]
-    #return res
 
 
 def datestr_from_filename(fname):
