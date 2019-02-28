@@ -153,6 +153,11 @@ def get_timedeltas(label_groups: List[LabelGroup], timerange_key: str):
     return list(map(lambda x: x.delta(), trs))
 
 
+def filter_gesture_for_timedeltas(label_groups: List[LabelGroup], gesture: str):
+    filtered = filter(lambda x: x.label_name == gesture, label_groups)
+    return filtered
+
+
 zero = timedelta(milliseconds=0)
 low = timedelta(milliseconds=1500)
 mid = timedelta(milliseconds=2500)
