@@ -148,7 +148,7 @@ def get_timeranges(label_groups: List[LabelGroup], timerange_key: str):
 
 
 def get_timedeltas(label_groups: List[LabelGroup], timerange_key: str):
-    trs = get_timedeltas(label_groups, timerange_key)
+    trs = get_timeranges(label_groups, timerange_key)
     trs = filter(None, trs)
     return list(map(lambda x: x.delta(), trs))
 
