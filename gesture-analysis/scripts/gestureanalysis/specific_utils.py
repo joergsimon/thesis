@@ -143,9 +143,14 @@ class LabelGroup(object):
         return no_error
 
 
-def get_timeranges(label_groups: List[LabelGroup], timerange_key: str):
+def get_timeranges(label_groups: List[LabelGroup], timerange_key: str) -> List[Timerange]:
     return list(map(lambda x: getattr(x, timerange_key), label_groups))
 
+
+def get_timeranges_tuple(label_groups: List[LabelGroup], timerange_key: str) -> List[(pd.Timestamp, pd.Timestamp)]:
+    ranges = get_timeranges(label_groups, timerange_key)
+    ranges = map(lambda x: tim_to_tu(x), ranges)
+    return ranges
 
 def get_timedeltas(label_groups: List[LabelGroup], timerange_key: str):
     trs = get_timeranges(label_groups, timerange_key)
