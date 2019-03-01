@@ -3,7 +3,7 @@ import tqdm
 import pathlib
 import random
 import matplotlib.pyplot as plt
-from .constants import Constants
+import matplotlib.image as mpimg
 
 
 class UserDataHelper:
@@ -42,9 +42,11 @@ class UserDataHelper:
             f, axarr = plt.subplots(num_users, num_columns)
             for row in range(num_users):
                 for cs in range(num_columns):
+                    axarr[row, cs].set_title(f'{usrs[row]}/{g}/{cols[cs]}')
                     path = f'../figures/raw/{usrs[row]}/{g}/{cols[cs]}.png'
-                    a = plt.imread(path)
+                    a = mpimg.imread(path)
                     axarr[row, cs].imshow(a)
+            plt.show()
 
 
 def generate_img_base_path(username: str, gesture: str, bar: tqdm.tqdm_notebook) -> str:
