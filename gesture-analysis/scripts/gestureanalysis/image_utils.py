@@ -24,6 +24,18 @@ class UserDataHelper:
             for gesture in gesturebar:
                 handler(username, gesture, gesturebar)
 
+    def iterate_users_of_gestures(self, handler: Callable[[str, str, tqdm.tqdm_notebook], None]):
+        gesturebar = tqdm.tqdm_notebook(self.gestures, desc='gestures', leave=False)
+        for gesture in gesturebar:
+            gesturebar.set_description("Processing %s" % gesture)
+            userbar = tqdm.tqdm_notebook(self.usernames, desc='users')
+            for username in userbar:
+                if username == 'AE30':
+                    print('skipping user' + username)
+                    continue
+                handler(username, gesture, userbar)
+
+
     def gen_random_combination(self, num_users: int, num_gestures: int, num_columns: int) -> (List[str], List[str], List[str]):
         usrs = random.sample(range(0, len(self.usernames)), num_users)
         usrs = [self.usernames[i] for i in usrs]
