@@ -61,11 +61,15 @@ class UserDataHelper:
             plt.show()
 
 
-def generate_img_base_path(username: str, gesture: str, bar: tqdm.tqdm_notebook) -> str:
-    bar.set_description('creating path for ' + gesture + ' of ' + username)
-    fig_base_path = '../figures/raw/'+username+'/'+gesture+'/'
+def img_base_path(username: str, gesture: str) -> str:
+    fig_base_path = '../figures/raw/' + username + '/' + gesture + '/'
     pathlib.Path(fig_base_path).mkdir(parents=True, exist_ok=True)
     return fig_base_path
+
+
+def generate_img_base_path(username: str, gesture: str, bar: tqdm.tqdm_notebook) -> str:
+    bar.set_description('creating path for ' + gesture + ' of ' + username)
+    return img_base_path(username, gesture)
 
 
 def img_exist(path: str, col: str) -> bool:
