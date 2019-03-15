@@ -246,3 +246,11 @@ def get_dynamic_labels(label_data):
 def get_static_labels(label_data):
     static = label_data[label_data['aut0_dyn1_static2'] == 2]
     return static
+
+
+def data_for_gesture(users: List, username: str, gesture: str) -> List[pd.DataFrame]:
+    glove_merged = users[username]['glove_merged']
+    g_lbls = glove_merged[glove_merged['label_automatic'] == gesture]
+    label_groups = users[username]['lbl_groups_fl']
+    lgs = filter_gesture_for_timedeltas(label_groups, gesture)
+    return g_lbls, lgs

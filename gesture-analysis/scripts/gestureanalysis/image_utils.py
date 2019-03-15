@@ -5,7 +5,6 @@ import random
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-from scripts.gestureanalysis import specific_utils as sutils
 
 
 class UserDataHelper:
@@ -78,21 +77,13 @@ def img_exist(path: str, col: str) -> bool:
     return my_file.exists()
 
 
-def check_skip_all(path, data):
+def check_skip_all(path: str, data: pd.DataFrame) -> bool:
     all_image_exist = True
     for col in data.columns:
         if not img_exist(path, col):
             all_image_exist = False
             break
     return all_image_exist
-
-
-def data_for_gesture(users: List, username:str, gesture:str):
-    glove_merged = users[username]['glove_merged']
-    g_lbls = glove_merged[glove_merged['label_automatic'] == gesture]
-    label_groups = users[username]['lbl_groups_fl']
-    lgs = sutils.filter_gesture_for_timedeltas(label_groups, gesture)
-    return g_lbls, lgs
 
 
 def add_line_for_label(lg, timerange_key, df_w_fitting_idx, col, y, axis, color):

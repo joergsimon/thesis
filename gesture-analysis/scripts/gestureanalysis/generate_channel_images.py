@@ -5,6 +5,8 @@ import time
 import pathlib
 import matplotlib.pyplot as plt
 import pandas as pd
+
+import scripts.gestureanalysis.specific_utils
 from scripts.gestureanalysis import image_utils as iutils
 from scripts.gestureanalysis import specific_utils as sutils
 from scripts.gestureanalysis import utils as utils
@@ -131,7 +133,7 @@ def generate_visualize_all_channel_gesture_combinations_using_all_users_callback
                 collector.reset(gesture)
                 plt.close('all')
                 time.sleep(0.1)
-        data, groups = iutils.data_for_gesture(users, username, gesture)
+        data, groups = sutils.data_for_gesture(users, username, gesture)
         groups = list(groups)
         collector.groups_of_all_users = collector.groups_of_all_users + groups
         if len(groups) == 0:
