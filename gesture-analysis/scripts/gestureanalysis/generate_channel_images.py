@@ -135,7 +135,7 @@ def generate_visualize_all_channel_gesture_combinations_using_all_users_callback
                 template = ChannelVisTemplate()
                 path = iutils.generate_img_base_path('all_users', gesture, bar)
                 if skipp and iutils.check_skip_all(path, collector.instances_of_all_users[0]):
-                    skippable.add_skipped_thing(gesture)
+                    skippable.add_skipped_thing(gesture, show_message=True)
                     return
                 template.visualize_gesture(path, collector.instances_of_all_users,
                                            collector.groups_of_all_users, skippable)
