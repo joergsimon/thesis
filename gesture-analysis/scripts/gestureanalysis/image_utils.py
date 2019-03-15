@@ -37,7 +37,7 @@ class UserDataHelper:
                 handler(username, gesture, userbar)
 
     def gen_random_combination(self, num_users: int, num_gestures: int, num_columns: int) -> (List[str], List[str], List[str]):
-        usn = [x for x in self.usernames if x is not 'AE30'] # no data for AE30
+        usn = [x for x in self.usernames if x != 'AE30'] # no data for AE30
         usrs = random.sample(range(0, len(usn)), num_users)
         usrs = [usn[i] for i in usrs]
         gstrs = random.sample(range(len(self.gestures)), num_gestures)
