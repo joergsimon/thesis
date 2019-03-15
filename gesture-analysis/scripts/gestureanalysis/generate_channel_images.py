@@ -5,11 +5,9 @@ import time
 import pathlib
 import matplotlib.pyplot as plt
 import pandas as pd
-
-import scripts.gestureanalysis.specific_utils
-from scripts.gestureanalysis import image_utils as iutils
-from scripts.gestureanalysis import specific_utils as sutils
-from scripts.gestureanalysis import utils as utils
+from . import specific_utils as sutils
+from . import image_utils as iutils
+from . import utils
 
 
 class Skippable:
