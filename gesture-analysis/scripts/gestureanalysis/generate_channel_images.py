@@ -49,6 +49,7 @@ class ChannelVisTemplate:
         self.path = None
         self.list_of_dfs = None
         self.label_groups = None
+        self.y_min = None
 
     def print_avarage_signal(self):
         av = self.average.loc[:, self.current_column]
@@ -92,7 +93,8 @@ class ChannelVisTemplate:
                           label_groups: List[sutils.LabelGroup], skippable: Skippable):
         self.label_groups = label_groups
         self.path = path
-        self.average = utils.average_of_frames(data_per_gesture_instance)
+        self.list_of_dfs = data_per_gesture_instance
+        self.average = utils.average_of_frames(self.list_of_dfs)
         self.std = utils.std_of_frames(self.list_of_dfs, average=self.average)
         for col in self.iterate_columns(skippable):
             self.current_column = col
