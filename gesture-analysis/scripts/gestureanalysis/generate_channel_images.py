@@ -15,16 +15,27 @@ class Skippable:
     def __init__(self, handler: Callable[[Skippable, str, str, tqdm.tqdm_notebook], None]):
         self.skipped_things = []
         self.handler = handler
+        self._mute = False
 
     def get_callback(self):
         def callback(username: str, gesture: str, bar: tqdm.tqdm_notebook):
             self.handler(self, username, gesture, bar)
         return callback
 
+    def mute(self):
+        self._mute = True
+
+    def unmute(self):
+        self._mute = False
+
     def add_skipped_thing(self, thing: str, show_message: bool):
         self.skipped_things.append(thing)
-        if show_message:
+        if show_message and (not self._mute):
             print(f'skip {thing} because a image(s) is/are already there')
+
+    def report(self):
+        if len(self.skipped_things) > 0:
+            print(f'skipped #{len(self.skipped_things)} image generations')
 
 
 class ChannelVisTemplate:
@@ -110,7 +121,7 @@ def generate_visualize_all_channel_user_gesture_combinations_callback(users: Lis
         plt.close('all')
         time.sleep(0.1)
     skippable = Skippable(visualize_channel_user_gesture_callback)
-    return skippable.get_callback()
+    return skippable.get_callback(), skippable
 
 
 def generate_visualize_all_channel_gesture_combinations_using_all_users_callback(users: List,
@@ -142,7 +153,7 @@ def generate_visualize_all_channel_gesture_combinations_using_all_users_callback
         all_instances = sutils.split_df_by_groups(data, ranges)
         collector.instances_of_all_users = collector.instances_of_all_users + all_instances
     skippable = Skippable(visualize_channel_gesture_callback)
-    return skippable.get_callback()
+    return skippable.get_callback(), skippable
 
 
 class AllUsersCollector:
