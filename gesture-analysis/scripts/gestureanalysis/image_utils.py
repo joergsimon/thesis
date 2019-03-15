@@ -86,7 +86,7 @@ class UserDataHelper:
                 p = 5
                 if num_columns > 4:
                     r = 75
-                    p = 105
+                    p = 115
                 axarr[0, cs].set_title(cols[cs], rotation=r, pad=p)
             f.tight_layout(pad=0.4)
             plt.show()
