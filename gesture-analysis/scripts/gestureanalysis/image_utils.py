@@ -41,7 +41,10 @@ class UserDataHelper:
         usrs = [self.usernames[i] for i in usrs]
         gstrs = random.sample(range(len(self.gestures)), num_gestures)
         gstrs = [self.gestures[i] for i in gstrs]
-        cols = random.sample(range(len(self.columns)), num_columns)
+        cs = self.columns
+        if '64_Magnetometer_Y_ignore_double' in self.columns:
+            cs = cs[:-7]
+        cols = random.sample(range(len(cs)), num_columns)
         cols = [self.columns[i] for i in cols]
 
         return [usrs, gstrs, cols]
