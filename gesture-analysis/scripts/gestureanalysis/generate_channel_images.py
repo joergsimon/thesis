@@ -139,9 +139,9 @@ def generate_visualize_all_channel_gesture_combinations_using_all_users_callback
                     return
                 template.visualize_gesture(path, collector.instances_of_all_users,
                                            collector.groups_of_all_users, skippable)
-                collector.reset(gesture)
-                plt.close('all')
-                time.sleep(0.1)
+            collector.reset(gesture)
+            plt.close('all')
+            time.sleep(0.1)
         data, groups = sutils.data_for_gesture(users, username, gesture)
         groups = list(groups)
         collector.groups_of_all_users = collector.groups_of_all_users + groups
