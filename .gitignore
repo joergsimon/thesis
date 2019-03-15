@@ -1,3 +1,6 @@
+# Domain specific
+gesture-analysis/figures/
+
 # Mac specific
 *.DS_Store
 
