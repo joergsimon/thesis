@@ -89,8 +89,9 @@ class ChannelVisTemplate:
         plt.savefig(self.path + self.current_column + '.png')
         plt.close(1)
 
-    def visualize_gesture(self, path: str, data_per_gesture_instance: List[pd.DataFrame],
+    def visualize_gesture(self, path: str, gesture: str, data_per_gesture_instance: List[pd.DataFrame],
                           label_groups: List[sutils.LabelGroup], skippable: Skippable):
+        self.current_gesture = gesture
         self.label_groups = label_groups
         self.path = path
         self.list_of_dfs = data_per_gesture_instance
@@ -132,7 +133,7 @@ def generate_visualize_all_channel_user_gesture_combinations_callback(users: Lis
             return
         ranges = sutils.get_timeranges_tuple(template.label_groups, 'automatic')
         list_of_dfs = sutils.split_df_by_groups(data, ranges)
-        template.visualize_gesture(path, list_of_dfs, label_groups, skippable)
+        template.visualize_gesture(path, gesture, list_of_dfs, label_groups, skippable)
         # cleanup
         plt.close('all')
         time.sleep(0.1)
@@ -154,7 +155,7 @@ def generate_visualize_all_channel_gesture_combinationss_callback(
                 if skipp and iutils.check_skip_all(path, collector.instances_of_all_users[0]):
                     skippable.add_skipped_thing(gesture, show_message=True)
                     return
-                template.visualize_gesture(path, collector.instances_of_all_users,
+                template.visualize_gesture(path, gesture, collector.instances_of_all_users,
                                            collector.groups_of_all_users, skippable)
             collector.reset(gesture)
             plt.close('all')
