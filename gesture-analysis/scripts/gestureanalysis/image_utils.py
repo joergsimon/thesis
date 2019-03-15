@@ -54,14 +54,14 @@ class UserDataHelper:
         usrs, gestrs, cols = self.gen_random_combination(num_users, num_gestures, num_columns)
 
         def hide_ticks_in_grid(row, cs, axarr):
-            if row != 0 and cs != len(num_columns) - 1:
+            if row != (num_users-1) and cs != 0:
                 plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
                 plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
                 axarr[row, cs].tick_params(axis='both', which='both', length=0)
-            elif row != 0:
+            elif row != (num_users-1):
                 plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
                 axarr[row, cs].tick_params(axis='x', which='x', length=0)
-            elif cs != (num_columns - 1):
+            elif cs != 0:
                 plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
                 axarr[row, cs].tick_params(axis='y', which='y', length=0)
 
