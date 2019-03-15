@@ -59,8 +59,9 @@ class UserDataHelper:
                 for cs in range(num_columns):
                     axarr[row, cs].set_title(f'{usrs[row]}/{g}/{cols[cs]}')
                     path = f'../figures/raw/{usrs[row]}/{g}/{cols[cs]}.png'
-                    a = mpimg.imread(path)
-                    axarr[row, cs].imshow(a)
+                    if pathlib.Path(path).exists():
+                        a = mpimg.imread(path)
+                        axarr[row, cs].imshow(a)
             plt.show()
 
 
