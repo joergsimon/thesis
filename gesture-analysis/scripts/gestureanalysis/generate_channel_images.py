@@ -96,7 +96,7 @@ def generate_visualize_all_channel_user_gesture_combinations_callback(users: Lis
         path = iutils.generate_img_base_path(username, gesture, bar)
         data, label_groups = sutils.data_for_gesture(users, username, gesture)
         template.label_groups = list(label_groups)
-        if len(label_groups) == 0:
+        if len(template.label_groups) == 0:
             skippable.add_skipped_thing(f'{gesture}/{username} (no data)', show_message=True)
             return
         data = sutils.drop_labels_and_unused(data)
