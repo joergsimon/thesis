@@ -2,8 +2,10 @@ from typing import List, Callable
 import tqdm
 import pathlib
 import random
+import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from scripts.gestureanalysis import specific_utils as sutils
 
 
 class UserDataHelper:
@@ -34,7 +36,6 @@ class UserDataHelper:
                     print('skipping user' + username)
                     continue
                 handler(username, gesture, userbar)
-
 
     def gen_random_combination(self, num_users: int, num_gestures: int, num_columns: int) -> (List[str], List[str], List[str]):
         usrs = random.sample(range(0, len(self.usernames)), num_users)
@@ -75,3 +76,32 @@ def generate_img_base_path(username: str, gesture: str, bar: tqdm.tqdm_notebook)
 def img_exist(path: str, col: str) -> bool:
     my_file = pathlib.Path(path+col+'.png')
     return my_file.exists()
+
+
+def check_skip_all(path, data):
+    all_image_exist = True
+    for col in data.columns:
+        if not img_exist(path, col):
+            all_image_exist = False
+            break
+    return all_image_exist
+
+
+def data_for_gesture(users: List, username:str, gesture:str):
+    glove_merged = users[username]['glove_merged']
+    g_lbls = glove_merged[glove_merged['label_automatic'] == gesture]
+    label_groups = users[username]['lbl_groups_fl']
+    lgs = sutils.filter_gesture_for_timedeltas(label_groups, gesture)
+    return g_lbls, lgs
+
+
+def add_line_for_label(lg, timerange_key, df_w_fitting_idx, col, y, axis, color):
+    aut = lg.automatic
+    tr = getattr(lg, timerange_key)
+    start = pd.Timestamp('20180101') + (tr.start - aut.start)
+    end = pd.Timestamp('20180101') + (tr.end - aut.start)
+    x = df_w_fitting_idx.loc[start:end, col].index
+    y = [y] * len(x)
+    s = pd.Series(y, index=x)
+    lbl = f'{timerange_key}: {tr.delta().total_seconds():.2f}s'
+    s.plot(subplots=True, ax=axis, color=color, alpha=0.7, linewidth=2, label=lbl, x_compat=True)
