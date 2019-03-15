@@ -37,15 +37,16 @@ class UserDataHelper:
                 handler(username, gesture, userbar)
 
     def gen_random_combination(self, num_users: int, num_gestures: int, num_columns: int) -> (List[str], List[str], List[str]):
-        usrs = random.sample(range(0, len(self.usernames)), num_users)
-        usrs = [self.usernames[i] for i in usrs]
+        usn = [x for x in self.usernames if x is not 'AE30'] # no data for AE30
+        usrs = random.sample(range(0, len(usn)), num_users)
+        usrs = [usn[i] for i in usrs]
         gstrs = random.sample(range(len(self.gestures)), num_gestures)
         gstrs = [self.gestures[i] for i in gstrs]
         cs = self.columns
-        if '64_Magnetometer_Y_ignore_double' in self.columns:
+        if '64_Magnetometer_Y_ignore_double' in self.columns: # this are erroneous data or labels columns
             cs = cs[:-7]
         cols = random.sample(range(len(cs)), num_columns)
-        cols = [self.columns[i] for i in cols]
+        cols = [cs[i] for i in cols]
 
         return [usrs, gstrs, cols]
 
@@ -57,11 +58,16 @@ class UserDataHelper:
             f, axarr = plt.subplots(num_users, num_columns, figsize=(20, 10))
             for row in range(num_users):
                 for cs in range(num_columns):
-                    axarr[row, cs].set_title(f'{usrs[row]}/{g}/{cols[cs]}')
+                    #axarr[row, cs].set_title(f'{usrs[row]}/{g}/{cols[cs]}')
                     path = f'../figures/raw/{usrs[row]}/{g}/{cols[cs]}.png'
                     if pathlib.Path(path).exists():
                         a = mpimg.imread(path)
                         axarr[row, cs].imshow(a)
+            for row in range(num_users):
+                axarr[row, 0].set_ylabel(usrs[row], rotation=0, size='large')
+            for cs in range(num_columns):
+                axarr[0, cs].set_title(cols[cs])
+            f.tight_layout()
             plt.show()
 
 
