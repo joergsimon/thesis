@@ -101,6 +101,20 @@ class ChannelVisTemplate:
             self.visualize_channel_with_average_signal_and_std()
 
 
+class AllUsersCollector:
+
+    def __init__(self):
+        self.instances_of_all_users = []
+        self.groups_of_all_users = []
+        self.current_gesture = None
+        self.reset(None)
+
+    def reset(self, new_gesture):
+        self.instances_of_all_users = []
+        self.groups_of_all_users = []
+        self.current_gesture = new_gesture
+
+
 def generate_visualize_all_channel_user_gesture_combinations_callback(users: List, skipp: bool):
     def visualize_channel_user_gesture_callback(skippable: Skippable,
                                                 username: str, gesture: str,
@@ -126,16 +140,17 @@ def generate_visualize_all_channel_user_gesture_combinations_callback(users: Lis
     return skippable.get_callback(), skippable
 
 
-def generate_visualize_all_channel_gesture_combinations_using_all_users_callback(users: List,
-                                                                                 collector: AllUsersCollector,
-                                                                                 skipp: bool):
+def generate_visualize_all_channel_gesture_combinationss_callback(
+        users: List, users_key: str,
+        data_callback: Callable[[List, str, str], (List[pd.DataFrame], List[sutils.LabelGroup])],
+        collector: AllUsersCollector, skipp: bool):
     def visualize_channel_gesture_callback(skippable: Skippable,
                                            username: str, gesture: str,
                                            bar: tqdm.tqdm_notebook):
         if gesture != collector.current_gesture:
             if collector.current_gesture is not None:
                 template = ChannelVisTemplate()
-                path = iutils.generate_img_base_path('all_users', gesture, bar)
+                path = iutils.generate_img_base_path(users_key, gesture, bar)
                 if skipp and iutils.check_skip_all(path, collector.instances_of_all_users[0]):
                     skippable.add_skipped_thing(gesture, show_message=True)
                     return
@@ -144,7 +159,7 @@ def generate_visualize_all_channel_gesture_combinations_using_all_users_callback
             collector.reset(gesture)
             plt.close('all')
             time.sleep(0.1)
-        data, groups = sutils.data_for_gesture(users, username, gesture)
+        data, groups = data_callback(users, username, gesture)
         groups = list(groups)
         collector.groups_of_all_users = collector.groups_of_all_users + groups
         if len(groups) == 0:
@@ -158,15 +173,14 @@ def generate_visualize_all_channel_gesture_combinations_using_all_users_callback
     return skippable.get_callback(), skippable
 
 
-class AllUsersCollector:
+def generate_visualize_all_channel_gesture_combinations_using_all_users_callback(users: List,
+                                                                                 collector: AllUsersCollector,
+                                                                                 skipp: bool):
+    return generate_visualize_all_channel_gesture_combinationss_callback(
+        users, 'all_users', sutils.data_for_gesture, collector, skipp)
 
-    def __init__(self):
-        self.instances_of_all_users = []
-        self.groups_of_all_users = []
-        self.current_gesture = None
-        self.reset(None)
 
-    def reset(self, new_gesture):
-        self.instances_of_all_users = []
-        self.groups_of_all_users = []
-        self.current_gesture = new_gesture
+def generate_visualize_all_channel_gesture_combinations_using_all_users_timealigned_callback(
+        users: List, collector: AllUsersCollector, skipp: bool):
+    return generate_visualize_all_channel_gesture_combinationss_callback(
+        users, 'all_users_timealigned', sutils.data_for_gesture_timealigned, collector, skipp)

@@ -152,6 +152,7 @@ def get_timeranges_tuple(label_groups: List[LabelGroup], timerange_key: str) -> 
     ranges = map(lambda x: tim_to_tu(x), ranges)
     return ranges
 
+
 def get_timedeltas(label_groups: List[LabelGroup], timerange_key: str):
     trs = get_timeranges(label_groups, timerange_key)
     trs = filter(None, trs)
@@ -248,9 +249,16 @@ def get_static_labels(label_data):
     return static
 
 
-def data_for_gesture(users: List, username: str, gesture: str) -> List[pd.DataFrame]:
+def data_for_gesture(users: List, username: str, gesture: str) -> (List[pd.DataFrame], List[LabelGroup]):
     glove_merged = users[username]['glove_merged']
     g_lbls = glove_merged[glove_merged['label_automatic'] == gesture]
     label_groups = users[username]['lbl_groups_fl']
     lgs = filter_gesture_for_timedeltas(label_groups, gesture)
     return g_lbls, lgs
+
+
+def data_for_gesture_timealigned(users: List, username: str, gesture: str) -> (List[pd.DataFrame], List[LabelGroup]):
+    glove_merged = users[username]['glove_merged'] # get back all data in this case
+    label_groups = users[username]['lbl_groups_fl']
+    lgs = filter_gesture_for_timedeltas(label_groups, gesture)
+    return glove_merged, lgs
