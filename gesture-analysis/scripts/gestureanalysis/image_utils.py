@@ -82,7 +82,10 @@ class UserDataHelper:
             for row in range(num_users):
                 axarr[row, 0].set_ylabel(usrs[row], rotation=0, size='large')
             for cs in range(num_columns):
-                axarr[0, cs].set_title(cols[cs])
+                r = 0
+                if num_columns > 4:
+                    r = 45
+                axarr[0, cs].set_title(cols[cs], rotation=r)
             f.tight_layout()
             plt.show()
 
