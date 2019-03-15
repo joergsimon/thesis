@@ -53,6 +53,18 @@ class UserDataHelper:
     def display_random_generated_images(self, num_users: int, num_gestures: int, num_columns: int):
         usrs, gestrs, cols = self.gen_random_combination(num_users, num_gestures, num_columns)
 
+        def hide_ticks_in_grid(row, col, axarr):
+            if row != 0 and cs != len(num_columns) - 1:
+                plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
+                plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
+                axarr[row, cs].tick_params(axis='both', which='both', length=0)
+            elif row != 0:
+                plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
+                axarr[row, cs].tick_params(axis='x', which='x', length=0)
+            elif cs != len(num_columns) - 1:
+                plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
+                axarr[row, cs].tick_params(axis='y', which='y', length=0)
+
         # we create a grid per gesture:
         for g in gestrs:
             f, axarr = plt.subplots(num_users, num_columns, figsize=(20, 10))
@@ -63,6 +75,7 @@ class UserDataHelper:
                     if pathlib.Path(path).exists():
                         a = mpimg.imread(path)
                         axarr[row, cs].imshow(a)
+                    hide_ticks_in_grid(row, cs, axarr)
             for row in range(num_users):
                 axarr[row, 0].set_ylabel(usrs[row], rotation=0, size='large')
             for cs in range(num_columns):
