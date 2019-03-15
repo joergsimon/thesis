@@ -60,10 +60,10 @@ class UserDataHelper:
                 axarr[row, cs].tick_params(axis='both', which='both', length=0)
             elif row != (num_users-1):
                 plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
-                axarr[row, cs].tick_params(axis='x', which='x', length=0)
+                axarr[row, cs].tick_params(axis='both', which='both', length=0)
             elif cs != 0:
                 plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
-                axarr[row, cs].tick_params(axis='y', which='y', length=0)
+                axarr[row, cs].tick_params(axis='both', which='both', length=0)
 
         # we create a grid per gesture:
         for g in gestrs:
