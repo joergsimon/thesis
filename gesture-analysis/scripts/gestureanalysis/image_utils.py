@@ -69,7 +69,7 @@ class UserDataHelper:
 
         # we create a grid per gesture:
         for g in gestrs:
-            f, axarr = plt.subplots(num_users, num_columns, figsize=(20, 10))
+            f, axarr = plt.subplots(num_users, num_columns, figsize=(17, 10))
             f.suptitle(g)
             for row in range(num_users):
                 for cs in range(num_columns):
