@@ -162,7 +162,7 @@ class AllUsersCollector:
         self.instances_of_all_users = []
         self.groups_of_all_users = []
         self.current_gesture = None
-        self.reset()
+        self.reset(None)
 
     def reset(self, new_gesture):
         self.instances_of_all_users = []
