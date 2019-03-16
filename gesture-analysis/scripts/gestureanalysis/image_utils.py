@@ -54,13 +54,6 @@ class UserDataHelper:
     def display_random_generated_images(self, num_users: int, num_gestures: int, num_columns: int):
         usrs, gestrs, cols = self.gen_random_combination(num_users, num_gestures, num_columns)
 
-        def hide_ticks_in_grid(row, cs, axarr):
-            plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
-            plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
-            axarr[row, cs].tick_params(axis='both', which='both', length=0)
-            axarr[row, cs].set_xticklabels([])
-            axarr[row, cs].set_yticklabels([])
-
         # we create a grid per gesture:
         for g in gestrs:
             f, axarr = plt.subplots(num_users, num_columns, figsize=(17, 10))
@@ -83,6 +76,14 @@ class UserDataHelper:
                 axarr[0, cs].set_title(cols[cs], rotation=r, pad=p)
             f.tight_layout(pad=0.4)
             plt.show()
+
+
+def hide_ticks_in_grid(row, cs, axarr):
+    plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
+    plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
+    axarr[row, cs].tick_params(axis='both', which='both', length=0)
+    axarr[row, cs].set_xticklabels([])
+    axarr[row, cs].set_yticklabels([])
 
 
 def img_base_path(username: str, gesture: str) -> str:
