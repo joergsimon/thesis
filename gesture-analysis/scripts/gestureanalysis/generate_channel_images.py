@@ -5,8 +5,6 @@ import time
 import pathlib
 import matplotlib.pyplot as plt
 import pandas as pd
-
-from image_utils import AllUsersCollector, Skippable
 from . import specific_utils as sutils
 from . import image_utils as iutils
 from . import utils
@@ -41,7 +39,7 @@ class ChannelVisTemplate:
                                             alpha=0.7, linewidth=0.5,
                                             legend=False, x_compat=True)
 
-    def iterate_columns(self, skippable: Skippable):
+    def iterate_columns(self, skippable: iutils.Skippable):
         for col in self.average.columns:
             p = pathlib.Path(self.path + col + '.png')
             if p.exists():
@@ -64,7 +62,7 @@ class ChannelVisTemplate:
         plt.close(1)
 
     def visualize_gesture(self, path: str, gesture: str, data_per_gesture_instance: List[pd.DataFrame],
-                          label_groups: List[sutils.LabelGroup], skippable: Skippable):
+                          label_groups: List[sutils.LabelGroup], skippable: iutils.Skippable):
         self.current_gesture = gesture
         self.label_groups = label_groups
         self.path = path
@@ -142,6 +140,6 @@ def generate_visualize_all_channel_gesture_combinations_using_all_users_callback
 
 
 def generate_visualize_all_channel_gesture_combinations_using_all_users_timealigned_callback(
-        users: List, collector: AllUsersCollector, skipp: bool):
+        users: List, collector: iutils.AllUsersCollector, skipp: bool):
     return generate_visualize_all_channel_gesture_combinationss_callback(
         users, 'all_users_timealigned', sutils.data_for_gesture_timealigned, collector, skipp)
