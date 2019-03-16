@@ -5,51 +5,25 @@ import time
 import pathlib
 import matplotlib.pyplot as plt
 import pandas as pd
+
+from image_utils import AllUsersCollector, Skippable
 from . import specific_utils as sutils
 from . import image_utils as iutils
 from . import utils
 
 
-class Skippable:
-
-    def __init__(self, handler: Callable[[Skippable, str, str, tqdm.tqdm_notebook], None]):
-        self.skipped_things = []
-        self.handler = handler
-        self._mute = False
-
-    def get_callback(self):
-        def callback(username: str, gesture: str, bar: tqdm.tqdm_notebook):
-            self.handler(self, username, gesture, bar)
-        return callback
-
-    def mute(self):
-        self._mute = True
-
-    def unmute(self):
-        self._mute = False
-
-    def add_skipped_thing(self, thing: str, show_message: bool):
-        self.skipped_things.append(thing)
-        if show_message and (not self._mute):
-            print(f'skip {thing} because a image(s) is/are already there')
-
-    def report(self):
-        if len(self.skipped_things) > 0:
-            print(f'skipped #{len(self.skipped_things)} image generations')
-
-
 class ChannelVisTemplate:
 
     def __init__(self):
-        self.average = None
-        self.std = None
-        self.current_gesture = None
-        self.current_column = None
+        self.average: pd.DataFrame = None
+        self.std: pd.DataFrame = None
+        self.current_gesture: str = None
+        self.current_column: str = None
         self.axis = None
-        self.path = None
-        self.list_of_dfs = None
-        self.label_groups = None
-        self.y_min = None
+        self.path: str = None
+        self.list_of_dfs: List[pd.DataFrame] = None
+        self.label_groups: List[sutils.LabelGroup] = None
+        self.y_min: float = None
 
     def print_avarage_signal(self):
         av = self.average.loc[:, self.current_column]
@@ -102,22 +76,8 @@ class ChannelVisTemplate:
             self.visualize_channel_with_average_signal_and_std()
 
 
-class AllUsersCollector:
-
-    def __init__(self):
-        self.instances_of_all_users = []
-        self.groups_of_all_users = []
-        self.current_gesture = None
-        self.reset(None)
-
-    def reset(self, new_gesture):
-        self.instances_of_all_users = []
-        self.groups_of_all_users = []
-        self.current_gesture = new_gesture
-
-
 def generate_visualize_all_channel_user_gesture_combinations_callback(users: List, skipp: bool):
-    def visualize_channel_user_gesture_callback(skippable: Skippable,
+    def visualize_channel_user_gesture_callback(skippable: iutils.Skippable,
                                                 username: str, gesture: str,
                                                 bar: tqdm.tqdm_notebook):
         template = ChannelVisTemplate()
@@ -137,15 +97,15 @@ def generate_visualize_all_channel_user_gesture_combinations_callback(users: Lis
         # cleanup
         plt.close('all')
         time.sleep(0.1)
-    skippable = Skippable(visualize_channel_user_gesture_callback)
+    skippable = iutils.Skippable(visualize_channel_user_gesture_callback)
     return skippable.get_callback(), skippable
 
 
 def generate_visualize_all_channel_gesture_combinationss_callback(
         users: List, users_key: str,
         data_callback: Callable[[List, str, str], (List[pd.DataFrame], List[sutils.LabelGroup])],
-        collector: AllUsersCollector, skipp: bool):
-    def visualize_channel_gesture_callback(skippable: Skippable,
+        collector: iutils.AllUsersCollector, skipp: bool):
+    def visualize_channel_gesture_callback(skippable: iutils.Skippable,
                                            username: str, gesture: str,
                                            bar: tqdm.tqdm_notebook):
         if gesture != collector.current_gesture:
@@ -170,12 +130,12 @@ def generate_visualize_all_channel_gesture_combinationss_callback(
         ranges = sutils.get_timeranges_tuple(groups, 'automatic')
         all_instances = sutils.split_df_by_groups(data, ranges)
         collector.instances_of_all_users = collector.instances_of_all_users + all_instances
-    skippable = Skippable(visualize_channel_gesture_callback)
+    skippable = iutils.Skippable(visualize_channel_gesture_callback)
     return skippable.get_callback(), skippable
 
 
 def generate_visualize_all_channel_gesture_combinations_using_all_users_callback(users: List,
-                                                                                 collector: AllUsersCollector,
+                                                                                 collector: iutils.AllUsersCollector,
                                                                                  skipp: bool):
     return generate_visualize_all_channel_gesture_combinationss_callback(
         users, 'all_users', sutils.data_for_gesture, collector, skipp)

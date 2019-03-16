@@ -54,18 +54,12 @@ class UserDataHelper:
         usrs, gestrs, cols = self.gen_random_combination(num_users, num_gestures, num_columns)
 
         def hide_ticks_in_grid(row, cs, axarr):
-            if row != (num_users-1) and cs != 0:
-                plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
-                plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
-                axarr[row, cs].tick_params(axis='both', which='both', length=0)
-                axarr[row, cs].set_xticklabels([])
-                axarr[row, cs].set_yticklabels([])
-            elif row != (num_users-1):
-                plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
-                axarr[row, cs].tick_params(axis='both', which='both', length=0)
-            elif cs != 0:
-                plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
-                axarr[row, cs].tick_params(axis='both', which='both', length=0)
+            plt.setp(axarr[row, cs].get_xticklabels(), visible=False)
+            plt.setp(axarr[row, cs].get_yticklabels(), visible=False)
+            axarr[row, cs].tick_params(axis='both', which='both', length=0)
+            axarr[row, cs].set_xticklabels([])
+            axarr[row, cs].set_yticklabels([])
+            axarr[row, cs].axis('off')
 
         # we create a grid per gesture:
         for g in gestrs:
@@ -73,7 +67,6 @@ class UserDataHelper:
             f.suptitle(g, y=0.99)
             for row in range(num_users):
                 for cs in range(num_columns):
-                    #axarr[row, cs].set_title(f'{usrs[row]}/{g}/{cols[cs]}')
                     path = f'../figures/raw/{usrs[row]}/{g}/{cols[cs]}.png'
                     if pathlib.Path(path).exists():
                         a = mpimg.imread(path)
@@ -127,3 +120,45 @@ def add_line_for_label(lg, timerange_key, df_w_fitting_idx, col, y, axis, color)
     s = pd.Series(y, index=x)
     lbl = f'{timerange_key}: {tr.delta().total_seconds():.2f}s'
     s.plot(subplots=True, ax=axis, color=color, alpha=0.7, linewidth=2, label=lbl, x_compat=True)
+
+
+class AllUsersCollector:
+
+    def __init__(self):
+        self.instances_of_all_users = []
+        self.groups_of_all_users = []
+        self.current_gesture = None
+        self.reset(None)
+
+    def reset(self, new_gesture):
+        self.instances_of_all_users = []
+        self.groups_of_all_users = []
+        self.current_gesture = new_gesture
+
+
+class Skippable:
+
+    def __init__(self, handler: Callable[[Skippable, str, str, tqdm.tqdm_notebook], None]):
+        self.skipped_things = []
+        self.handler = handler
+        self._mute = False
+
+    def get_callback(self):
+        def callback(username: str, gesture: str, bar: tqdm.tqdm_notebook):
+            self.handler(self, username, gesture, bar)
+        return callback
+
+    def mute(self):
+        self._mute = True
+
+    def unmute(self):
+        self._mute = False
+
+    def add_skipped_thing(self, thing: str, show_message: bool):
+        self.skipped_things.append(thing)
+        if show_message and (not self._mute):
+            print(f'skip {thing} because a image(s) is/are already there')
+
+    def report(self):
+        if len(self.skipped_things) > 0:
+            print(f'skipped #{len(self.skipped_things)} image generations')
