@@ -60,7 +60,6 @@ class UserDataHelper:
             axarr[row, cs].tick_params(axis='both', which='both', length=0)
             axarr[row, cs].set_xticklabels([])
             axarr[row, cs].set_yticklabels([])
-            axarr[row, cs].axis('off')
 
         # we create a grid per gesture:
         for g in gestrs:
