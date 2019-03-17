@@ -288,7 +288,7 @@ def collect_values(usernames: List[str], users: List, colum: str, remove_outlier
     lines = values_per_user(usernames, users, colum, remove_outliers, higher_percentile,
                             lower_percentile, use_tqtm=use_tqtm)
     for l, u in lines:
-        all_vals += l
+        all_vals += list(l)
         if use_callback:
             user_callback(l, u)
     return all_vals
