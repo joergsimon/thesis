@@ -105,3 +105,37 @@ def overlaps(startend1, startend2):
     else:
         return False
 
+
+def remove_outliers_with_percentile(vector, percentile, get_idx, next_ok):
+    perc = np.percentile(vector, percentile)
+    o3kidx = get_idx(vector, perc)
+    for i in o3kidx:
+        if len(vector) < i+1:
+            if next_ok(vector, i, perc):
+                vector[i] = (vector[i-1] + vector[i+1])/2
+            else:
+                vector[i] = vector[i-1]
+        else:
+            vector[i] = vector[i-1]
+
+
+def remove_lower_outliers_with_percentile(vector, percentile):
+
+    def get_idx(v, p):
+        return np.where(v < p)[0]
+
+    def next_ok(v, i, p):
+        return v[i+1] > p
+
+    remove_outliers_with_percentile(vector, percentile, get_idx, next_ok)
+
+
+def remove_higher_outliers_with_percentile(vector, percentile):
+
+    def get_idx(v, p):
+        return np.where(v > p)[0]
+
+    def next_ok(v, i, p):
+        return v[i+1] < p
+
+    remove_outliers_with_percentile(vector, percentile, get_idx, next_ok)

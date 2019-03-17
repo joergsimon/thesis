@@ -3,12 +3,13 @@ from typing import List
 import pathlib
 import time
 import tqdm
+import numpy as np
 import matplotlib.pyplot as plt
 from . import specific_utils as sutils
 from . import image_utils as iutils
 
 
-def draw_and_save_hist(array):
+def draw_and_save_hist(array, path):
     plt.hist(array)
     plt.savefig(path)
     plt.close()
@@ -21,7 +22,7 @@ def hist_with(path: str, label_group: List[sutils.LabelGroup], label_type: str,
             skippable.add_skipped_thing(path, show_message=True)
             return
     deltas = sutils.get_timedeltas(label_group, label_type)
-    draw_and_save_hist(list(map(lambda x: x.total_seconds(), deltas)))
+    draw_and_save_hist(list(map(lambda x: x.total_seconds(), deltas)), path)
 
 
 def get_path(username, gesture, label_type):
@@ -80,3 +81,20 @@ def generate_all_timing_histograms(users, ud_helper):
     for lt in lbl_types:
         generate_timing_historgrams(users, lt, ud_helper)
 
+
+def show_valuerange_histograms(usernames: List[str], users: List, column: str, remove_outliers: bool,
+                               higher_percentile: float, lower_percentile: float, print_summary: bool,
+                               show_overal: bool):
+    all_vals = []
+    lines = sutils.values_per_user(usernames, users, column, remove_outliers,
+                                   higher_percentile, lower_percentile, True)
+    for onebigline, username in lines:
+        plt.hist(onebigline)
+        plt.show()
+        plt.close()
+        all_vals += list(onebigline)
+    if show_overal:
+        all_vals = np.array(all_vals)
+        plt.hist(all_vals)
+        plt.show()
+        plt.close()

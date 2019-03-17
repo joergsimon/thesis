@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Callable
 import pandas as pd
 import numpy as np
 from datetime import timedelta
@@ -221,30 +221,30 @@ def combine_ranges_contained(reference, start_search, list_of_possible_subs):
 # ====== Specific to work with the label_data files =======
 
 
-def recover_group(startdate, labelrow):
+def recover_group(startdate, labelrow) -> (pd.Timestamp, pd.Timestamp):
     start = labelrow['start_glove']
     end = labelrow['end_glove']
     s = pd.Timestamp(startdate + (start * Constants.dt_t))
     e = pd.Timestamp(startdate + (end * Constants.dt_t))
-    return (s, e)
+    return s, e
 
 
-def get_automatic_labels(label_data):
+def get_automatic_labels(label_data: pd.DataFrame):
     automatic = label_data[label_data['manual_L_vs_automatic_G'] == 'G']
     return automatic
 
 
-def get_manual_labels(label_data):
+def get_manual_labels(label_data: pd.DataFrame):
     manual = label_data[label_data['manual_L_vs_automatic_G'] == 'L']
     return manual
 
 
-def get_dynamic_labels(label_data):
+def get_dynamic_labels(label_data: pd.DataFrame):
     dynamic = label_data[label_data['aut0_dyn1_static2'] == 1]
     return dynamic
 
 
-def get_static_labels(label_data):
+def get_static_labels(label_data: pd.DataFrame):
     static = label_data[label_data['aut0_dyn1_static2'] == 2]
     return static
 
@@ -262,3 +262,33 @@ def data_for_gesture_timealigned(users: List, username: str, gesture: str) -> (L
     label_groups = users[username]['lbl_groups_fl']
     lgs = filter_gesture_for_timedeltas(label_groups, gesture)
     return glove_merged, lgs
+
+
+def values_per_user(usernames: List[str], users: List, colum, remove_outliers: bool,
+                    higher_percentile: float, lower_percentile: float, use_tqtm=False):
+    uns = tqdm.tqdm_notebook(usernames) if use_tqtm else usernames
+    for username in uns:
+        if not 'glove_merged' in users[username]:
+            print('skipping user' + username)
+            continue
+        data = users[username]['glove_merged'][colum]
+        onebigline = data.values.ravel().copy()
+        if remove_outliers:
+            remove_higher_outliers_with_percentile(onebigline, higher_percentile)
+            remove_lower_outliers_with_percentile(onebigline, lower_percentile)
+        yield onebigline, username
+
+
+def collect_values(usernames: List[str], colum: str, remove_outliers: bool,
+                   higher_percentile: float, lower_percentile: float,
+                   use_callback: bool,
+                   user_callback: Callable[[np.array, str], None],
+                   use_tqtm=False):
+    all_vals = []
+    lines = values_per_user(usernames, colum, remove_outliers, higher_percentile,
+                            lower_percentile, use_tqtm=use_tqtm)
+    for l, u in lines:
+        all_vals += l
+        if use_callback:
+            user_callback(l, u)
+    return all_vals
