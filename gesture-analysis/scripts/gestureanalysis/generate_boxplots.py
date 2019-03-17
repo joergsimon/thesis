@@ -16,10 +16,10 @@ def print_valurange_summary(onebigline: np.array, username: str):
     print("")
 
 
-def show_valuerange_individual_boxplots(usernames: List[str], users: List, column: str,
-                                        remove_outliers: bool, higher_percentile: float,
-                                        lower_percentile: float, print_summary: bool,
-                                        show_overal: bool):
+def show_valuerange_individual_boxplots(usernames: List[str], users: List, title: str,
+                                        column: str, remove_outliers: bool,
+                                        higher_percentile: float, lower_percentile: float,
+                                        print_summary: bool, show_overal: bool):
     all_vals = []
     lines = sutils.values_per_user(usernames, users, column, remove_outliers,
                                    higher_percentile, lower_percentile, True)
@@ -27,7 +27,7 @@ def show_valuerange_individual_boxplots(usernames: List[str], users: List, colum
         if print_summary:
             print_valurange_summary(onebigline, username)
         pd.DataFrame(data=onebigline.T).boxplot()
-        plt.title(f'values of {column} from {username}')
+        plt.title(f'values of {title} from {username}')
         plt.show()
         all_vals += list(onebigline)
     if show_overal:
@@ -35,11 +35,11 @@ def show_valuerange_individual_boxplots(usernames: List[str], users: List, colum
         if print_summary:
             print_valurange_summary(onebigline, 'all_users')
         pd.DataFrame(data=all_vals).T.boxplot()
-        plt.title(f'values of {column} from all users')
+        plt.title(f'values of {title} from all users')
         plt.show()
 
 
-def show_valuerange_boxplots_in_one_image(usernames: List[str], users: List, column: str,
+def show_valuerange_boxplots_in_one_image(usernames: List[str], users: List, title: str, column: str,
                                           remove_outliers: bool, higher_percentile: float,
                                           lower_percentile: float, print_summary: bool,
                                           show_overal: bool):
@@ -57,12 +57,12 @@ def show_valuerange_boxplots_in_one_image(usernames: List[str], users: List, col
     df = pd.concat(all_dfs, axis=1)
     #print(df)
     df.boxplot()
-    plt.title(f'values of {column} for all different users')
+    plt.title(f'values of {title} for all different users')
     plt.show()
     if show_overal:
         all_vals = np.array(all_vals)
         if print_summary:
             print_valurange_summary(onebigline, 'all_users')
         pd.DataFrame(data=all_vals).T.boxplot()
-        plt.title(f'values of {column} for all different users including overall distribution')
+        plt.title(f'values of {title} for all different users including overall distribution')
         plt.show()
