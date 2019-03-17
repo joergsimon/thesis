@@ -27,12 +27,14 @@ def show_valuerange_individual_boxplots(usernames: List[str], users: List, colum
         if print_summary:
             print_valurange_summary(onebigline, username)
         pd.DataFrame(data=onebigline.T).boxplot()
+        pd.title(f'values of {column} from {username}')
         plt.show()
         all_vals += list(onebigline)
     if show_overal:
         all_vals = np.array(all_vals)
         if print_summary:
             print_valurange_summary(onebigline, 'all_users')
+        pd.title(f'values of {column} from all users')
         pd.DataFrame(data=all_vals).T.boxplot()
         plt.show()
 
@@ -55,10 +57,12 @@ def show_valuerange_boxplots_in_one_image(usernames: List[str], users: List, col
     df = pd.concat(all_dfs, axis=1)
     #print(df)
     df.boxplot()
+    pd.title(f'values of {column} for all different users')
     plt.show()
     if show_overal:
         all_vals = np.array(all_vals)
         if print_summary:
             print_valurange_summary(onebigline, 'all_users')
         pd.DataFrame(data=all_vals).T.boxplot()
+        pd.title(f'values of {column} for all different users including overall distribution')
         plt.show()
