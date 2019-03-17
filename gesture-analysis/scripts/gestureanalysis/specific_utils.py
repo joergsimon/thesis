@@ -279,13 +279,13 @@ def values_per_user(usernames: List[str], users: List, colum, remove_outliers: b
         yield onebigline, username
 
 
-def collect_values(usernames: List[str], colum: str, remove_outliers: bool,
+def collect_values(usernames: List[str], users: List, colum: str, remove_outliers: bool,
                    higher_percentile: float, lower_percentile: float,
                    use_callback: bool,
                    user_callback: Callable[[np.array, str], None],
                    use_tqtm=False):
     all_vals = []
-    lines = values_per_user(usernames, colum, remove_outliers, higher_percentile,
+    lines = values_per_user(usernames, users, colum, remove_outliers, higher_percentile,
                             lower_percentile, use_tqtm=use_tqtm)
     for l, u in lines:
         all_vals += l
