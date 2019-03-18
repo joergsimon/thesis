@@ -281,7 +281,7 @@ def values_per_user_for_label_type_and_gesture(usernames: List[str], users: List
         if gesture is 'all_values':
             data = glove_merged
         elif gesture == 'zero_class':
-            data = glove_merged[glove_merged[label_type].notnull()]
+            data = glove_merged[glove_merged[label_type].isnull()]
         elif gesture == 'all_labels':
             data = glove_merged[glove_merged[label_type].notnull()]
         else:
