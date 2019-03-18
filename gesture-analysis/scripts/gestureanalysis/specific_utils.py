@@ -266,12 +266,35 @@ def data_for_gesture_timealigned(users: List, username: str, gesture: str) -> (L
 
 def values_per_user(usernames: List[str], users: List, colum, remove_outliers: bool,
                     higher_percentile: float, lower_percentile: float, use_tqtm=False):
+    return values_per_user_for_label_type_and_gesture(
+        usernames, users, colum, None, 'all_values', remove_outliers,
+        higher_percentile, lower_percentile, use_tqtm)
+
+
+def values_per_user_for_label_type_and_gesture(usernames: List[str], users: List, columes,
+                                               label_type: str, gesture: str, remove_outliers: bool,
+                                               higher_percentile: float, lower_percentile: float,
+                                               use_tqtm=False):
+
+    def get_data():
+        glove_merged = users[username]['glove_merged']
+        if gesture is 'all_values':
+            data = glove_merged
+        elif gesture == 'zero_class':
+            data = glove_merged[glove_merged[label_type].notnull()]
+        elif gesture == 'all_labels':
+            data = glove_merged[glove_merged[label_type].notnull()]
+        else:
+            data = glove_merged[glove_merged[label_type] == gesture]
+        return data
+
     uns = tqdm.tqdm_notebook(usernames) if use_tqtm else usernames
     for username in uns:
         if not 'glove_merged' in users[username]:
             print('skipping user' + username)
             continue
-        data = users[username]['glove_merged'][colum]
+        data = get_data()
+        data = data[columes]
         onebigline = data.values.ravel().copy()
         if remove_outliers:
             remove_higher_outliers_with_percentile(onebigline, higher_percentile)

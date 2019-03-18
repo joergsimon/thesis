@@ -43,10 +43,21 @@ def show_valuerange_boxplots_in_one_image(usernames: List[str], users: List, tit
                                           remove_outliers: bool, higher_percentile: float,
                                           lower_percentile: float, print_summary: bool,
                                           show_overal: bool):
+    return show_valuerange_boxplots_in_one_imagefor_label_type_and_gesture(
+        usernames, users, title, column, None, 'all_values', remove_outliers,
+        higher_percentile, lower_percentile, print_summary, show_overal)
+
+
+def show_valuerange_boxplots_in_one_imagefor_label_type_and_gesture(
+        usernames: List[str], users: List, title: str, column: str,
+        label_type: str, gesture: str, remove_outliers: bool,
+        higher_percentile: float, lower_percentile: float,
+        print_summary: bool, show_overal: bool):
     all_vals = []
     all_dfs = []
-    lines = sutils.values_per_user(usernames, users, column, remove_outliers,
-                                   higher_percentile, lower_percentile, True)
+    lines = sutils.values_per_user_for_label_type_and_gesture(
+        usernames, users, column, label_type, gesture, remove_outliers,
+        higher_percentile, lower_percentile, True)
     for onebigline, username in lines:
         if print_summary:
             print_valurange_summary(onebigline, username)
