@@ -271,11 +271,9 @@ def values_per_user(usernames: List[str], users: List, colum, remove_outliers: b
         higher_percentile, lower_percentile, use_tqtm)
 
 
-def values_per_user_for_label_type_and_gesture(usernames: List[str], users: List, columes,
+def values_for_user_for_label_type_and_gesture(username: str, users: List, columes,
                                                label_type: str, gesture: str, remove_outliers: bool,
-                                               higher_percentile: float, lower_percentile: float,
-                                               use_tqtm=False):
-
+                                               higher_percentile: float, lower_percentile: float):
     def get_data():
         glove_merged = users[username]['glove_merged']
         if gesture is 'all_values':
@@ -288,17 +286,27 @@ def values_per_user_for_label_type_and_gesture(usernames: List[str], users: List
             data = glove_merged[glove_merged[label_type] == gesture]
         return data
 
+    data = get_data()
+    data = data[columes]
+    onebigline = data.values.ravel().copy()
+    if remove_outliers:
+        remove_higher_outliers_with_percentile(onebigline, higher_percentile)
+        remove_lower_outliers_with_percentile(onebigline, lower_percentile)
+    return onebigline
+
+
+def values_per_user_for_label_type_and_gesture(usernames: List[str], users: List, columes,
+                                               label_type: str, gesture: str, remove_outliers: bool,
+                                               higher_percentile: float, lower_percentile: float,
+                                               use_tqtm=False):
     uns = tqdm.tqdm_notebook(usernames) if use_tqtm else usernames
     for username in uns:
         if not 'glove_merged' in users[username]:
             print('skipping user' + username)
             continue
-        data = get_data()
-        data = data[columes]
-        onebigline = data.values.ravel().copy()
-        if remove_outliers:
-            remove_higher_outliers_with_percentile(onebigline, higher_percentile)
-            remove_lower_outliers_with_percentile(onebigline, lower_percentile)
+        onebigline = values_for_user_for_label_type_and_gesture(
+            username, users, columes, label_type, gesture, remove_outliers,
+            higher_percentile, lower_percentile)
         yield onebigline, username
 
 

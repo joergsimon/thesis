@@ -83,8 +83,7 @@ def generate_all_timing_histograms(users, ud_helper):
 
 
 def show_valuerange_histograms(usernames: List[str], users: List, column: str, remove_outliers: bool,
-                               higher_percentile: float, lower_percentile: float, print_summary: bool,
-                               show_overal: bool):
+                               higher_percentile: float, lower_percentile: float, show_overal: bool):
     all_vals = []
     lines = sutils.values_per_user(usernames, users, column, remove_outliers,
                                    higher_percentile, lower_percentile, True)
@@ -97,4 +96,36 @@ def show_valuerange_histograms(usernames: List[str], users: List, column: str, r
         all_vals = np.array(all_vals)
         plt.hist(all_vals)
         plt.show()
+        plt.close()
+
+
+def get_valurange_hist_path(username, gesture, column):
+    fig_base_path = iutils.img_base_path(username, gesture)
+    path = f'{fig_base_path}value_distrubution_of_{column}.png'
+    return path
+
+
+def save_valuerange_histograms(usernames: List[str], users: List, column: str, remove_outliers: bool,
+                               higher_percentile: float, lower_percentile: float, show_overal: bool,
+                               skippable: iutils.Skippable, skipp: bool):
+    all_vals = []
+    lines = sutils.values_per_user(usernames, users, column, remove_outliers,
+                                   higher_percentile, lower_percentile, True)
+    for onebigline, username in lines:
+        path = get_valurange_hist_path(username, 'all_values', column)
+        if skipp and pathlib.Path(path).exists():
+            skippable.add_skipped_thing(f'value distribution of {username}/{column}')
+            continue
+        plt.hist(onebigline)
+        plt.savefig(path)
+        plt.close()
+        all_vals += list(onebigline)
+    if show_overal:
+        path = get_valurange_hist_path('all_users', 'all_values', column)
+        if skipp and pathlib.Path(path).exists():
+            skippable.add_skipped_thing(f'value distribution of all_users/{column}')
+            return
+        all_vals = np.array(all_vals)
+        plt.hist(all_vals)
+        plt.savefig(path)
         plt.close()
