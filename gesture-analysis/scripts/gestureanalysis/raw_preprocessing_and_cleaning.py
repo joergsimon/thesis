@@ -64,7 +64,7 @@ def transform_index_to_time(fname, gdata, data):
 
 
 def preprocess_raw(users, add_label_func, transform_index_to_time_func):
-    for key, data in tqdm.tqdm(users.items()):
+    for key, data in tqdm.tqdm_notebook(users.items()):
         glove_data = data['glove']
         label_data = data['label']
         for (gd, ld) in zip(glove_data, label_data):
