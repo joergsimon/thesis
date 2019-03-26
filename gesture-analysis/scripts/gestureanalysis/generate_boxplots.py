@@ -3,6 +3,7 @@ from typing import List, Callable
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import seaborn as sns
 from . import utils
 from . import specific_utils as sutils
 
@@ -26,7 +27,9 @@ def show_valuerange_individual_boxplots(usernames: List[str], users: List, title
     for onebigline, username in lines:
         if print_summary:
             print_valurange_summary(onebigline, username)
-        pd.DataFrame(data=onebigline.T).boxplot()
+        fig, axes = plt.subplots()
+        sns.violinplot(data=pd.DataFrame(data=onebigline.T), ax=axes)
+        #pd.DataFrame(data=onebigline.T).boxplot()
         plt.title(f'values of {title} from {username}')
         plt.show()
         all_vals += list(onebigline)
@@ -34,7 +37,9 @@ def show_valuerange_individual_boxplots(usernames: List[str], users: List, title
         all_vals = np.array(all_vals)
         if print_summary:
             print_valurange_summary(onebigline, 'all_users')
-        pd.DataFrame(data=all_vals).T.boxplot()
+        fig, axes = plt.subplots()
+        sns.violinplot(data=pd.DataFrame(data=all_vals).T, ax=axes)
+        #pd.DataFrame(data=all_vals).T.boxplot()
         plt.title(f'values of {title} from all users')
         plt.show()
 
