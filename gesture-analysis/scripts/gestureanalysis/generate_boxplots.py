@@ -73,7 +73,8 @@ def show_valuerange_boxplots_in_one_imagefor_label_type_and_gesture(
     df = pd.concat(all_dfs, axis=1)
     #print(df)
     fig, axes = plt.subplots()
-    sns.violinplot(data=df, ax=axes)
+    v = sns.violinplot(x="participant ID", y="value", data=df, ax=axes)
+    v.set_xticklabels(rotation=45)
     #df.boxplot()
     plt.title(f'values of {title} for all different users')
     plt.show()
@@ -82,6 +83,7 @@ def show_valuerange_boxplots_in_one_imagefor_label_type_and_gesture(
         if print_summary:
             print_valurange_summary(onebigline, 'all_users')
         #pd.DataFrame(data=all_vals).T.boxplot()
-        sns.violinplot(data=pd.DataFrame(data=all_vals).T, ax=axes)
+        v = sns.violinplot(x="participant ID", y="value", data=pd.DataFrame(data=all_vals).T, ax=axes)
+        v.set_xticklabels(rotation=45)
         plt.title(f'values of {title} for all different users including overall distribution')
         plt.show()
