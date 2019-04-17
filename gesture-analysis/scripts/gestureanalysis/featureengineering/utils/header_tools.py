@@ -31,7 +31,7 @@ def create_headers(const):
     feature_headers = []
     feature_names = stat_describe_feature_names()
     for header in const.raw_headers:
-        if header == 'gesture':
+        if header.startswith('label'):
             continue
         sensor_idx = const.raw_headers.index(header)
         idx = header.find("_")
