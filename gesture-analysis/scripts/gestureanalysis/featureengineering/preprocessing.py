@@ -55,7 +55,8 @@ def convolution_filter(data, const):
             norm = np.linalg.norm(line[const.get_triple_idxs('accel',i)])
             if (norm > 0.8) and (norm < 1.2):
                 scale = 0.02 if i > 100 else 0.7
-                Grav[i] = vector_slerp(Grav[i], line[const.get_triple_idxs('accel',i)] / norm, scale)
+                xyz = (line[const.get_triple_idxs('accel', i)] / norm).astype(np.float64)
+                Grav[i] = vector_slerp(Grav[i], xyz, scale)
 
         LAs[k] = line[np.array(const.raw_indices['accel'])] - Grav.reshape(1,21)
 
