@@ -1,5 +1,6 @@
 import timeit
 import sys
+import gc
 import numpy as np
 import pandas as pd
 import scipy as sc
@@ -23,7 +24,7 @@ def get_windows(data,const):
         return (newData, newLabels)
 
 
-def transform_to_windows(data,const):
+def transform_to_windows(data,const,label_type):
     create_headers(const)
 
     print("flex const index trace info / transform_to_windows:")
@@ -56,7 +57,7 @@ def transform_to_windows(data,const):
         subframe = data.iloc[offset:(offset + const.window_size)]
         subframe = subframe._get_numeric_data()
         mat = single_value_features(subframe.values[:, 0])
-        sub_range = range(1, len(subframe.columns))
+        sub_range = range(1, len(subframe.columns)-4)
         for j in sub_range:
             if subframe.columns[j] != 'gesture':
                 vec = single_value_features(subframe.values[:, j])
@@ -91,10 +92,11 @@ def transform_to_windows(data,const):
         #res = self.computeTupelFeatures(row2, newHeaders, "flex_row2")
         #mat = np.append(mat, res)
 
-        counts = subframe.groupby("gesture").size()
+        counts = subframe.groupby(label_type).size()
         labelInfo.append(counts)
 
         matrix[i,:] = mat
+        gc.collect()
         # if matrix is None:
         #     matrix = mat
         # else:
