@@ -7,7 +7,7 @@ from .utils.header_tools import create_new_header
 from .utils.index_management import add_new_idx_to_hand
 
 
-def preprocess_basic(data,const):
+def preprocess_basic(data, const):
     if has_preprocess_basic_cache(const):
         data = pd.read_pickle(const.preprocessed_data_cache_file)
         const.load_preprocess_updates()
@@ -22,8 +22,8 @@ def preprocess_basic(data,const):
         return data
 
 
-def convert_values(data, const):
-    gyro_offset = np.loadtxt("dataingestion/gyro_offset.txt")
+def convert_values(data, const, gyro_calibration_path):
+    gyro_offset = np.loadtxt(gyro_calibration_path)
     accel_headers = const.filter_raw_header('accel')
     for header in accel_headers:
         data.loc[:,header] /= const.LSB_PER_G # in g
@@ -37,6 +37,7 @@ def convert_values(data, const):
         data.loc[:, header] /= const.LSB_PER_DEG_PER_SEC
 
 
+# TODO: this has not the name convolution filter but combination filter or so, check and rename
 def convolution_filter(data, const):
     n = len(data.index)
     LAs = np.zeros((n, const.number_imus * 3))
@@ -52,7 +53,7 @@ def convolution_filter(data, const):
             Grav[i] = rot.T.dot(Grav[i])
 
             norm = np.linalg.norm(line[const.get_triple_idxs('accel',i)])
-            if norm > 0.8 and norm < 1.2:
+            if (norm > 0.8) and (norm < 1.2):
                 scale = 0.02 if i > 100 else 0.7
                 Grav[i] = vector_slerp(Grav[i], line[const.get_triple_idxs('accel',i)] / norm, scale)
 
