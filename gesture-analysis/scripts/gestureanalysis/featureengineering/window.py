@@ -117,6 +117,31 @@ def transform_to_windows(data,const,label_type):
 
     return (newData, newLabels)
 
+
+def convert_to_float(data):
+    for idx in range(len(data.columns)):
+        if data.dtypes[idx] == np.dtype('int64'):
+            data[data.columns[idx]] = data[data.columns[idx]].astype(np.float64)
+
+
+def stts(array):
+    resMin = np.nanmin(array)
+    resMax = np.nanmax(array)
+    resRange = resMax - resMin
+    resMedian = np.median(array)
+    resMean = np.nanmean(array)
+    resStd = np.nanstd(array)
+    resVar = np.nanvar(array)
+    res25Q = np.percentile(array, 25)
+    res75Q = np.percentile(array, 75)
+    resSkew = sc.stats.skew(array)
+    resKurtosis = sc.stats.kurtosis(array)
+    resMode = sc.stats.mode(array, axis=None)[0][0]
+    return [resMean, resStd, resMin, res25Q, resMedian,
+            res75Q, resMax, resRange, resVar, resSkew,
+            resKurtosis, resMode]
+
+
 #
 # Spectral Entropy Algorithm:
 # http://stackoverflow.com/questions/21190482/spectral-entropy-and-spectral-energy-of-a-vector-in-matlab
@@ -126,49 +151,71 @@ def transform_to_windows(data,const,label_type):
 # matplotlib.mlab.psd
 # http://matplotlib.org/api/mlab_api.html#matplotlib.mlab.psd
 #
-def single_value_features(array):
-   resMin = np.nanmin(array)
-   resMax = np.nanmax(array)
-   resRange = resMax - resMin
-   resMedian = np.median(array)
-   resMean = np.nanmean(array)
-   resStd = np.nanstd(array)
-   resVar = np.nanvar(array)
-   res25Q = np.percentile(array, 25)
-   res75Q = np.percentile(array, 75)
-   resSkew = sc.stats.skew(array)
-   resKurtosis = sc.stats.kurtosis(array)
-   resMode = sc.stats.mode(array, axis=None)[0]
-   length = len(array)
-   y = np.fft.rfft(array)
-   magnitudes = np.abs(y)
-   magnitudes = np.delete(magnitudes, 0)
-   freqs = np.fft.rfftfreq(length, d=(1./58))
-   freqs = freqs[np.where(freqs >= 0)]
-   freqs = np.delete(freqs, 0)
-   freqs = np.abs(freqs)
-   spectral_centroid = np.sum(magnitudes*freqs)/np.sum(magnitudes)
-   psd = pow(magnitudes, 2)/freqs
-   psdsum = sum(psd)
-   psdnorm = psd/psdsum
-   spectral_entropy = sc.stats.entropy(psdnorm)
-   freq_5sum = freqs[0] + freqs[1] + freqs[2] + freqs[3] + freqs[4];
-   bandwith = max(freqs)-min(freqs)
+def single_value_features(array, headers):
+    t1 = timeit.default_timer()
 
-   # return np.array([resMean, resStd, resMin, res25Q, resMedian,
-   #                  res75Q, resMax, resRange, resVar, resSkew,
-   #                  resKurtosis, resMode, spectral_centroid,
-   #                  spectral_entropy, freqs[0], freqs[1], freqs[2],
-   #                  freqs[3], freqs[4], freq_5sum, bandwith])
+    def tmit(msg):
+        nonlocal t1
+        print(f"{msg} took {timeit.default_timer() - t1}")
+        t1 = timeit.default_timer()
 
-   # IMPORTANT: If you update here, also update the headers in header tools to have the same order!!!!
-   return np.array([resMean, resStd, resMin, res25Q, resMedian,
-                    res75Q, resMax, resRange, resVar, resSkew,
-                    resKurtosis, resMode, spectral_centroid,
-                    spectral_entropy, freqs[0], freqs[1], freqs[2],
-                    freqs[3], freqs[4], freq_5sum, bandwith])
+    try:
+        a = array
+        array = array.astype(np.float64)
+    except ValueError:
+        print(a)
+        print(headers)
+    tmit('conversion')
+
+    timestats = stts(array)
+    #tmit('stats')
+    length = len(array)
+    y = np.fft.rfft(array)
+    #tmit('fft')
+    res = map(lambda x: abs(x), stts(y))
+    freqstats = list(res)
+    magnitudes = np.abs(y)
+    magnitudes = np.delete(magnitudes, 0)
+    freqs = np.fft.rfftfreq(length, d=0.012)
+    freqs = freqs[np.where(freqs >= 0)]
+    freqs = np.delete(freqs, 0)
+    freqs = np.abs(freqs)
+    spectral_centroid = np.sum(magnitudes * freqs) / np.sum(magnitudes)
+    psd = pow(magnitudes, 2) / freqs
+    psdsum = sum(psd)
+    psdnorm = psd / psdsum
+    spectral_entropy = sc.stats.entropy(psdnorm)
+    freq_5sum = freqs[0] + freqs[1] + freqs[2] + freqs[3] + freqs[4];
+    bandwith = max(freqs) - min(freqs)
+    #tmit('fft features')
+    cwtmatr = scipy.signal.cwt(array, scipy.signal.ricker, np.arange(1, 101, 10))
+    cwt_sums = cwtmatr @ np.ones((len(array), 1))
+    cwt_sums_list = cwt_sums.flatten().tolist()
+    cwtstats = stts(cwtmatr.flatten())
+    #tmit('cwt')
+    peaks = scipy.signal.find_peaks_cwt(array, widths=np.arange(1, 2), wavelet=scipy.signal.ricker)
+    num_peaks = len(peaks)
+    peak_min = np.min(array[peaks])
+    peak_max = np.max(array[peaks])
+    peak_mean = np.mean(array[peaks])
+    #tmit('peaks')
+
+    # return np.array([resMean, resStd, resMin, res25Q, resMedian,
+    #                  res75Q, resMax, resRange, resVar, resSkew,
+    #                  resKurtosis, resMode, spectral_centroid,
+    #                  spectral_entropy, freqs[0], freqs[1], freqs[2],
+    #                  freqs[3], freqs[4], freq_5sum, bandwith])
+
+    # IMPORTANT: If you update here, also update the headers in header tools to have the same order!!!!
+    res_list = timestats + freqstats + [spectral_centroid, spectral_entropy]
+    res_list += freqs[0:5].tolist() + [freq_5sum, bandwith] + cwt_sums_list
+    res_list += cwtstats + [num_peaks, peak_min, peak_max, peak_mean]
+    return np.array(res_list)
+
 
 def correlational_features(array1, array2):
+    array1 = array1.astype(np.float64)
+    array2 = array2.astype(np.float64)
     # compute correlations, vectors, threshholds....
     # signal correlation:
     # http://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.signal.correlate.html
@@ -190,4 +237,11 @@ def correlational_features(array1, array2):
 
     fftCorr, fftPval = scipy.stats.spearmanr(fV1, fV2)
 
-    return np.array([angle, corr, pval, fftAngle, fftCorr, fftPval])
+    # mean differences:
+    diff = np.nanmean(array1) - np.nanmean(array2)
+    diffFFT = abs(np.nanmean(fV1) - np.nanmean(fV2))
+
+    # cross corr shift:
+    corr = np.correlate(array1, array2)[0]
+
+    return np.array([angle, corr, pval, fftAngle, fftCorr, fftPval, diff, diffFFT, corr])

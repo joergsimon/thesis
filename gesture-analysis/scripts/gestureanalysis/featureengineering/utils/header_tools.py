@@ -14,16 +14,23 @@ def strip_start_num(header):
 
 
 def stat_describe_feature_names():
-    return ["mean","std","min","25q","median",
+
+    sts = ["mean","std","min","25q","median",
             "75q","max","range","var","skew",
-            "kurtosis","mode","spectral_centroid",
-            "spectral_entropy","ff1","ff2","ff3",
+            "kurtosis","mode"]
+    fsts = list(map(lambda x: f"fft_{x}", sts))
+    fftf = ["spectral_centroid", "spectral_entropy","ff1","ff2","ff3",
             "ff4","ff5","freq_5sum","bandwith"]
+    cwtsms = list(map(lambda x: f"cwt_sums_{x}", range(0,10)))
+    cwts = list(map(lambda x: f"cwt_{x}", sts))
+    peaks = ["num_peaks", "peak_min", "peak_max", "peak_mean"]
+
+    return sts + fsts + fftf + cwtsms + cwts + peaks
 
 
 def tuple_feature_names():
     return ["angle","corr","pval","fftAngle","fftCorr",
-            "fftPval"]
+            "fftPval", "diff", "diffFFT", "xcorr"]
 
 
 def create_headers(const):
@@ -31,7 +38,7 @@ def create_headers(const):
     feature_headers = []
     feature_names = stat_describe_feature_names()
     for header in const.raw_headers:
-        if header.startswith('label'):
+        if header.startswith('label') or header == 'gesture':
             continue
         sensor_idx = const.raw_headers.index(header)
         idx = header.find("_")
