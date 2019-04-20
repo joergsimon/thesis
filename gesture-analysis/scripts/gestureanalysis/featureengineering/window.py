@@ -195,9 +195,9 @@ def single_value_features(array, headers):
     #tmit('cwt')
     peaks = scipy.signal.find_peaks_cwt(array, widths=np.arange(1, 2), wavelet=scipy.signal.ricker)
     num_peaks = len(peaks)
-    peak_min = np.min(array[peaks])
-    peak_max = np.max(array[peaks])
-    peak_mean = np.mean(array[peaks])
+    peak_min = np.min(array[peaks]) if num_peaks > 0 else np.nan
+    peak_max = np.max(array[peaks]) if num_peaks > 0 else np.nan
+    peak_mean = np.mean(array[peaks]) if num_peaks > 0 else np.nan
     #tmit('peaks')
 
     # return np.array([resMean, resStd, resMin, res25Q, resMedian,
