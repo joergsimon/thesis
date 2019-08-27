@@ -49,7 +49,7 @@ def create_headers(const):
             comb_num = "{}_{}".format(num, f_idx)
             h = create_new_header(header, comb_num, f_name)
             feature_headers.append(h)
-            add_new_idx_of_feature_to_hand(sensor_idx, (offset + f_idx), const, header, h)
+            #add_new_idx_of_feature_to_hand(sensor_idx, (offset + f_idx), const, header, h)
 
     finger_flex_line1_tuples = mh.get_combinations(const.raw_indices['flex']['row_1'])
     offset = len(feature_headers)

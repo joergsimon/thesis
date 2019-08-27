@@ -224,7 +224,7 @@ def correlational_features(array1, array2):
     vec1 = array1 / np.linalg.norm(array1)
     vec2 = array2 / np.linalg.norm(array2)
     angle = np.arccos(np.dot(vec1, vec2))
-    corr, pval = scipy.stats.spearmanr(array1, array2)
+    corrs, pval = scipy.stats.spearmanr(array1, array2)
     # inspired from http://svn.gna.org/svn/relax/tags/4.0.0/lib/geometry/vectors.py
     fV1 = np.fft.rfft(array1)
     fV2 = np.fft.rfft(array2)
@@ -244,4 +244,4 @@ def correlational_features(array1, array2):
     # cross corr shift:
     corr = np.correlate(array1, array2)[0]
 
-    return np.array([angle, corr, pval, fftAngle, fftCorr, fftPval, diff, diffFFT, corr])
+    return np.array([angle, corrs, pval, fftAngle, fftCorr, fftPval, diff, diffFFT, corr])
