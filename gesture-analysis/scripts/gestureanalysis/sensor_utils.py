@@ -102,7 +102,7 @@ def computed_feature_to_index(feature):
         return const.raw_indices[f'finger_{finger_idx}']['all'][idx]
 
 
-def sensor_array(features):
+def sensor_array(features, normalizer=None):
     """
     given a list of feature channels used, this method counts per sensor how many feature channels are used. This is
     used as a "proxy" to quantify the imprtance of a sensor in recursive sensor elimination RSE.
@@ -149,6 +149,8 @@ def sensor_array(features):
         imu_idx = ((idx-18)//6)+18
         sensors[imu_idx] += all_sensors[idx]
         feature_to_sensors[imu_idx] +=feature_to_all_sensors[idx]
+    if normalizer is not None:
+        sensors = sensors / normalizer
     return sensors, feature_to_sensors
 
 
