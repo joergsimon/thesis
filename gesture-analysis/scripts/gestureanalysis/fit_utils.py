@@ -20,12 +20,14 @@ def fit_classifier(classifiers, X, y, Xval, yval):
         progress.set_description(clf_name + ' fittet')
         p = clf_candidate.predict(Xval)
         s = f1_score(yval, p, average='micro')
+        s_weighted = f1_score(yval, p, average='weighted')
         p_t = clf_candidate.predict(X)
         s_t = f1_score(y, p_t, average='micro')
+        s_t_weighted = f1_score(y, p_t, average='weighted')
         print(f"val score {s} for {clf_name} (test: {s_t})")
         cmatrix = metr.confusion_matrix(yval, p)
         # print(cmatrix)
-        results.append((clf_name, s, s_t, cmatrix, clf_candidate))
+        results.append((clf_name, s, s_t, cmatrix, clf_candidate, s_weighted, s_t_weighted))
         gc.collect()
 
     return results
